@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en" target-language="zh-Hant" original="../OpenApi.resx">
+    <body>
+      <trans-unit id="OpenApiHeader">
+        <source>OpenAPI specifications</source>
+        <target state="new">OpenAPI specifications</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiNoSpecificationForResource">
+        <source>No specification for the selected resource</source>
+        <target state="new">No specification for the selected resource</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiPageTitle">
+        <source>{0} OpenAPI specifications</source>
+        <target state="new">{0} OpenAPI specifications</target>
+        <note>{0} is an application name</note>
+      </trans-unit>
+      <trans-unit id="OpenApiSelectAResource">
+        <source>Select a resource to view OpenAPI specifications</source>
+        <target state="new">Select a resource to view OpenAPI specifications</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiSelectMethod">
+        <source>Select method.</source>
+        <target state="new">Select method.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiSelectResourceToolbar">
+        <source>Select resource</source>
+        <target state="new">Select resource</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiUnknownState">
+        <source>Unknown state</source>
+        <target state="new">Unknown state</target>
+        <note />
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

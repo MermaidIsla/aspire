@@ -1,0 +1,169 @@
+﻿@page "/openapi"
+@page "/openapi/resource/{resourceName}"
+
+@using Aspire.Dashboard.Resources
+
+@namespace Aspire.Dashboard.Components.Pages
+
+<PageTitle><ApplicationName ResourceName="@nameof(Dashboard.Resources.OpenApi.OpenApiPageTitle)" Loc="@Loc" /></PageTitle>
+
+<div class="page-content-container">
+    <AspirePageContentLayout
+        AddNewlineOnToolbar="true"
+        @ref="_contentLayout"
+        HeaderStyle="margin-bottom: calc(var(--design-unit) * 2px);"
+        MobileToolbarButtonText="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectResourceToolbar)]">
+        <PageTitleSection>
+            <h1 class="page-header">@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiHeader)]</h1>
+        </PageTitleSection>
+        <ToolbarSection>
+            <ResourceSelect Resources="_resources"
+                            AriaLabel="@ControlsStringsLoc[nameof(ControlsStrings.ResourceLabel)]"
+                            @bind-SelectedResource="PageViewModel.SelectedOption"
+                            @bind-SelectedResource:after="HandleSelectedOptionChangedAsync" />
+        </ToolbarSection>
+        <MainSection>
+            <div style="width: 100%; height: 100%; overflow: auto;">
+                @if (PageViewModel.SelectedResource == null)
+                {
+                    <div class="empty-content">
+                        @if (ViewportInformation.IsDesktop)
+                        {
+                            <FluentIcon Icon="Icons.Regular.Size24.CodeBlock"/>@:&nbsp;
+                            @Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectAResource)]
+                        }
+                        else
+                        {
+                            <FluentIcon Icon="Icons.Regular.Size24.CodeBlock"/>@:&nbsp;
+                            <FluentAnchor Href="#" Appearance="Appearance.Hypertext" OnClick="@(async () => await _contentLayout!.OpenMobileToolbarAsync())">@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectAResource)]</FluentAnchor>
+                        }
+                    </div>
+                }
+                else if (PageViewModel.Methods == null)
+                {
+                    <div class="empty-content">
+                        @if (ViewportInformation.IsDesktop)
+                        {
+                            <FluentIcon Icon="Icons.Regular.Size24.CodeBlock" />
+
+                            @:&nbsp;
+                            @Loc[nameof(Dashboard.Resources.OpenApi.OpenApiNoSpecificationForResource)]
+                        }
+                        else
+                        {
+                            <FluentIcon Icon="Icons.Regular.Size24.CodeBlock" />
+
+                            @:&nbsp;
+                            <FluentAnchor Href="#" Appearance="Appearance.Hypertext" OnClick="@(async () => await _contentLayout!.OpenMobileToolbarAsync())">@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiNoSpecificationForResource)]</FluentAnchor>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <FluentSplitter BarHandle="@ViewportInformation.IsDesktop"
+                                    Style="height:100%"
+                                    Panel1Size="@(ViewportInformation.IsDesktop ? "2fr" : "0")"
+                                    Panel2Size="8fr"
+                                    BarSize="@(ViewportInformation.IsDesktop ? 5 : 0)">
+                        <Panel1>
+                            @if (ViewportInformation.IsDesktop)
+                            {
+                                <FluentTreeView Id="method-selector" Class="method-tree" @bind-CurrentSelected="@PageViewModel.SelectedTreeItem" @bind-CurrentSelected:after="HandleSelectedTreeItemChangedAsync">
+                                    <ChildContent>
+                                        @foreach (var tag in PageViewModel.Methods.OrderBy(g => g.Key))
+                                        {
+                                            <FluentTreeItem @key="tag.Key" Text="@tag.Key" Data="@tag.Key" title="@tag.Key" InitiallyExpanded="true" InitiallySelected="false">
+                                                @foreach (var method in tag.Value.OrderBy(i => i.Name))
+                                                {
+                                                    <FluentTreeItem @key="method.Name" Class="nested" Text="@method.Name" Data="@method" title="@method.Name" InitiallySelected="false" />
+                                                }
+                                            </FluentTreeItem>
+                                        }
+                                    </ChildContent>
+                                </FluentTreeView>
+                            }
+                        </Panel1>
+                        <Panel2>
+                            <div class="method-content">
+                                @if (PageViewModel.SelectedMethod == null)
+                                {
+                                    <p>@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectMethod)]</p>
+                                }
+                                else
+                                {
+                                    <h3>Request:</h3>
+                                    <div>
+                                        <FluentTextField Label="Url" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url" />
+                                        <FluentButton Appearance="Appearance.Outline" OnClick="@SendRequest">
+                                            <FluentIcon Value="@s_playIcon" Width="16px" />
+                                            <span>Send request</span>
+                                        </FluentButton>
+                                    </div>
+                                    @foreach (var parameter in PageViewModel.SelectedMethod.RequestParameters)
+                                    {
+                                        <div>
+                                            <FluentTextField Label="@($"Parameter: {parameter.Name}")" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })" />
+                                        </div>
+                                    }
+                                    <h3>Response:</h3>
+                                    <div>
+                                        <FluentTextField Label="Status Code" ReadOnly="true" Value="@PageViewModel.SelectedMethod.ResponseStatusCode" />
+                                    </div>
+                                    <div>
+                                        <FluentTextField Label="Content Type" ReadOnly="true" Value="@PageViewModel.SelectedMethod.ResponseContentType" />
+                                    </div>
+                                    <div>
+                                        <FluentTextArea Cols="80" Rows="10" Label="Body" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Response" />
+                                    </div>
+                                }
+                            </div>
+                        </Panel2>
+                    </FluentSplitter>
+                    <!--<div>
+                        <h1>Info</h1>
+                        @PageViewModel.Document.Info.Title
+                        @PageViewModel.Document.Info.Version
+                    </div>
+                    <div>
+                        <h1>Servers</h1>
+                        @foreach (var server in PageViewModel.Document.Servers)
+                        {
+                            @server.Url
+                            ;
+                        }
+                    </div>
+                    <div>
+                        <h1>Paths</h1>
+                        @foreach (var path in PageViewModel.Document.Paths)
+                        {
+                            @path.Key;
+                            <h2>Methods</h2>
+                            @if (path.Value.Operations.Count == 0)
+                            {
+                                <p>No methods found!</p>
+                            }
+                            else
+                            {
+                                @foreach (var operation in path.Value.Operations)
+                                {
+                                    @operation.Key;
+                                    <h3>Tags</h3>
+                                    @foreach (var tag in operation.Value.Tags)
+                                    {
+                                        @tag.Name;
+                                    }
+                                    <h3>Responses</h3>
+                                    @foreach (var response in operation.Value.Responses)
+                                    {
+                                        @response.Key;
+                                        @response.Value.Description;
+                                    }
+                                }
+                            }
+                        }
+                    </div>-->
+                }
+            </div>
+        </MainSection>
+    </AspirePageContentLayout>
+</div>

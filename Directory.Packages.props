@@ -200,5 +200,8 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="System.Formats.Asn1" Version="$(SystemFormatsAsn1PackageVersion)" />
     <PackageVersion Include="System.Text.Json" Version="$(SystemTextJsonPackageVersion)" />
+    <!-- OpenAPI -->
+    <PackageVersion Include="Microsoft.OpenApi" Version="$(MicrosoftOpenApiPackageVersion)" />
+    <PackageVersion Include="Microsoft.OpenApi.Readers" Version="$(MicrosoftOpenApiReadersPackageVersion)" />
   </ItemGroup>
 </Project>

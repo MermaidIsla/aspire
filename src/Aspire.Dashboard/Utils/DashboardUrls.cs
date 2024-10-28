@@ -12,6 +12,7 @@ internal static class DashboardUrls
     public const string MetricsBasePath = "metrics";
     public const string StructuredLogsBasePath = "structuredlogs";
     public const string TracesBasePath = "traces";
+    public const string OpenApiBasePath = "openapi";
 
     public static string ResourcesUrl()
     {
@@ -126,6 +127,17 @@ internal static class DashboardUrls
         if (token != null)
         {
             url = QueryHelpers.AddQueryString(url, "t", token);
+        }
+
+        return url;
+    }
+
+    public static string OpenApiUrl(string? resource = null)
+    {
+        var url = $"/{OpenApiBasePath}";
+        if (resource != null)
+        {
+            url += $"/resource/{Uri.EscapeDataString(resource)}";
         }
 
         return url;

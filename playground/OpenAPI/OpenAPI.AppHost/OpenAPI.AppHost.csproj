@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+    <UserSecretsId>6875c7c2-7e16-4cd8-90cd-07fa99cb636f</UserSecretsId>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsAspireHost>true</IsAspireHost>
+    <AssemblyName>OpenAPI.AppHost</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AspireProjectOrPackageReference Include="Aspire.Hosting.AppHost" />
+    
+    <ProjectReference Include="..\OpenAPI.ApiService\OpenAPI.ApiService.csproj" />
+  </ItemGroup>
+
+</Project>

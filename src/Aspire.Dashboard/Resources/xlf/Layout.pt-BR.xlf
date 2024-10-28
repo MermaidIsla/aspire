@@ -72,6 +72,11 @@
         <target state="translated">Monitoramento</target>
         <note />
       </trans-unit>
+      <trans-unit id="NavMenuOpenApiTab">
+        <source>OpenAPI</source>
+        <target state="new">OpenAPI</target>
+        <note />
+      </trans-unit>
       <trans-unit id="NavMenuResourcesTab">
         <source>Resources</source>
         <target state="translated">Recursos</target>

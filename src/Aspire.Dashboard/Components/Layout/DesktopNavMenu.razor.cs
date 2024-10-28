@@ -27,4 +27,8 @@ public partial class DesktopNavMenu : ComponentBase
     internal static Icon MetricsIcon(bool active = false) =>
         active ? new Icons.Filled.Size24.ChartMultiple()
                   : new Icons.Regular.Size24.ChartMultiple();
+
+    internal static Icon OpenApiIcon(bool active = false) =>
+        active ? new Icons.Filled.Size24.CodeBlock()
+                  : new Icons.Regular.Size24.CodeBlock();
 }
