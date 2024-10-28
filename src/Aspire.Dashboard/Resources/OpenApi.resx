@@ -139,4 +139,19 @@
   <data name="OpenApiSelectMethod" xml:space="preserve">
     <value>Select method.</value>
   </data>
+  <data name="OpenApiResponseDialogTitle" xml:space="preserve">
+    <value>Response</value>
+  </data>
+  <data name="OpenApiResponseDialogClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="OpenApiSendRequest" xml:space="preserve">
+    <value>Send request</value>
+  </data>
+  <data name="OpenApiViewAttributesToolbar" xml:space="preserve">
+    <value>View attributes</value>
+  </data>
+  <data name="OpenApiSelectAMethod" xml:space="preserve">
+    <value>Select a method</value>
+  </data>
 </root>

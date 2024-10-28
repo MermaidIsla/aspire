@@ -17,6 +17,21 @@
         <target state="new">{0} OpenAPI specifications</target>
         <note>{0} is an application name</note>
       </trans-unit>
+      <trans-unit id="OpenApiResponseDialogClose">
+        <source>Close</source>
+        <target state="new">Close</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiResponseDialogTitle">
+        <source>Response</source>
+        <target state="new">Response</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiSelectAMethod">
+        <source>Select a method</source>
+        <target state="new">Select a method</target>
+        <note />
+      </trans-unit>
       <trans-unit id="OpenApiSelectAResource">
         <source>Select a resource to view OpenAPI specifications</source>
         <target state="new">Select a resource to view OpenAPI specifications</target>
@@ -32,9 +47,19 @@
         <target state="new">Select resource</target>
         <note />
       </trans-unit>
+      <trans-unit id="OpenApiSendRequest">
+        <source>Send request</source>
+        <target state="new">Send request</target>
+        <note />
+      </trans-unit>
       <trans-unit id="OpenApiUnknownState">
         <source>Unknown state</source>
         <target state="new">Unknown state</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiViewAttributesToolbar">
+        <source>View attributes</source>
+        <target state="new">View attributes</target>
         <note />
       </trans-unit>
     </body>

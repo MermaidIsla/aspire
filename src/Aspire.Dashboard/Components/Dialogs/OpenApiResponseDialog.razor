@@ -1,0 +1,22 @@
+﻿@using Aspire.Dashboard.Resources
+@implements IDialogContentComponent<OpenApiResponseDialog.OpenApiDialogViewModel>
+@inject IStringLocalizer<OpenApi> Loc
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentGrid Style="width: 100%">
+        <FluentGridItem xs="4" md="2" xxl="1" Style="white-space: nowrap">
+            Content Type
+        </FluentGridItem>
+        <FluentGridItem xs="8" md="10" xxl="11">
+            <FluentTextField Style="width: 100%" ReadOnly="true" Value="@Content.ContentType" />
+        </FluentGridItem>
+        <FluentGridItem xs="4" md="2" xxl="1" Style="white-space: nowrap">
+            Status Code
+        </FluentGridItem>
+        <FluentGridItem xs="8" md="10" xxl="11">
+            <FluentTextField Style="width: 100%" ReadOnly="true" Value="@Content.StatusCode" />
+        </FluentGridItem>
+    </FluentGrid>
+    <h6>Body</h6>
+    <FluentTextArea Style="width: 100%" Rows="16" ReadOnly="true" Value="@Content.Body" />
+</FluentStack>

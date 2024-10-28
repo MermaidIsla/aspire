@@ -88,6 +88,33 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string OpenApiResponseDialogClose {
+            get {
+                return ResourceManager.GetString("OpenApiResponseDialogClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response.
+        /// </summary>
+        public static string OpenApiResponseDialogTitle {
+            get {
+                return ResourceManager.GetString("OpenApiResponseDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a method.
+        /// </summary>
+        public static string OpenApiSelectAMethod {
+            get {
+                return ResourceManager.GetString("OpenApiSelectAMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select a resource to view OpenAPI specifications.
         /// </summary>
         public static string OpenApiSelectAResource {
@@ -115,11 +142,29 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Send request.
+        /// </summary>
+        public static string OpenApiSendRequest {
+            get {
+                return ResourceManager.GetString("OpenApiSendRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown state.
         /// </summary>
         public static string OpenApiUnknownState {
             get {
                 return ResourceManager.GetString("OpenApiUnknownState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View attributes.
+        /// </summary>
+        public static string OpenApiViewAttributesToolbar {
+            get {
+                return ResourceManager.GetString("OpenApiViewAttributesToolbar", resourceCulture);
             }
         }
     }

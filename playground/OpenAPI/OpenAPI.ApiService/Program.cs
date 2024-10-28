@@ -28,7 +28,9 @@ app.MapGet("/weatherforecast", () =>
         ))
         .ToArray();
     return forecast;
-}).WithTags("WeatherForecast");
+})
+.WithDescription("Shows a weather forecast for the next 5 days.")
+.WithTags("WeatherForecast");
 
 var users = new Dictionary<Guid, User>();
 
@@ -41,12 +43,16 @@ app.MapDelete("/user/{id}", (Guid id) =>
     }
 
     return Results.BadRequest("User not found!");
-}).WithTags("Users");
+})
+.WithDescription("Deletes a user.")
+.WithTags("Users");
 
 app.MapGet("/users", () =>
 {
     return Results.Ok(users.Values);
-}).WithTags("Users");
+})
+.WithDescription("Gets all users.")
+.WithTags("Users");
 
 app.MapGet("/user/{id}", (Guid id) =>
 {
@@ -56,7 +62,9 @@ app.MapGet("/user/{id}", (Guid id) =>
     }
 
     return Results.BadRequest("User not found!");
-}).WithTags("Users");
+})
+.WithDescription("Gets a user.")
+.WithTags("Users");
 
 app.MapPost("/user/{name}", (string name) =>
 {
@@ -67,7 +75,9 @@ app.MapPost("/user/{name}", (string name) =>
     };
     users[user.Id] = user;
     return Results.Ok(user);
-}).WithTags("Users");
+})
+.WithDescription("Creates a user.")
+.WithTags("Users");
 
 app.MapPut("/user/{id}", (Guid id, string name) =>
 {
@@ -78,13 +88,16 @@ app.MapPut("/user/{id}", (Guid id, string name) =>
     }
 
     return Results.BadRequest("User not found!");
-}).WithTags("Users");
+})
+.WithDescription("Updates a user.")
+.WithTags("Users");
 
 app.MapGet("/openapi/v1.json", async (HttpContext context) =>
 {
     context.Response.ContentType = "application/json;charset=utf-8";
-    await context.Response.WriteAsync("{\"openapi\":\"3.0.1\",\"info\":{\"title\":\"OpenAPI.ApiService | v1\",\"version\":\"1.0.0\"},\"servers\":[{\"url\":\"http://localhost:5132\"}],\"paths\":{\"/weatherforecast\":{\"get\":{\"tags\":[\"WeatherForecast\"],\"responses\":{\"200\":{\"description\":\"OK\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/WeatherForecast\"}}}}}}}},\"/user/{id}\":{\"delete\":{\"tags\":[\"Users\"],\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"required\":true,\"schema\":{\"type\":\"string\",\"format\":\"uuid\"}}],\"responses\":{\"200\":{\"description\":\"OK\"}}},\"get\":{\"tags\":[\"Users\"],\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"required\":true,\"schema\":{\"type\":\"string\",\"format\":\"uuid\"}}],\"responses\":{\"200\":{\"description\":\"OK\"}}},\"put\":{\"tags\":[\"Users\"],\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"required\":true,\"schema\":{\"type\":\"string\",\"format\":\"uuid\"}},{\"name\":\"name\",\"in\":\"query\",\"required\":true,\"schema\":{\"type\":\"string\"}}],\"responses\":{\"200\":{\"description\":\"OK\"}}}},\"/users\":{\"get\":{\"tags\":[\"Users\"],\"responses\":{\"200\":{\"description\":\"OK\"}}}},\"/user/{name}\":{\"post\":{\"tags\":[\"Users\"],\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"required\":true,\"schema\":{\"type\":\"string\"}}],\"responses\":{\"200\":{\"description\":\"OK\"}}}}},\"components\":{\"schemas\":{\"WeatherForecast\":{\"required\":[\"date\",\"temperatureC\",\"summary\"],\"type\":\"object\",\"properties\":{\"date\":{\"type\":\"string\",\"format\":\"date\"},\"temperatureC\":{\"type\":\"integer\",\"format\":\"int32\"},\"summary\":{\"type\":\"string\",\"nullable\":true},\"temperatureF\":{\"type\":\"integer\",\"format\":\"int32\"}}}}},\"tags\":[{\"name\":\"WeatherForecast\"},{\"name\":\"Users\"}]}");
-});
+    await context.Response.WriteAsync("{\"openapi\":\"3.0.1\",\"info\":{\"title\":\"OpenAPI.ApiService | v1\",\"version\":\"1.0.0\"},\"servers\":[{\"url\":\"http://localhost:5132\"}],\"paths\":{\"/weatherforecast\":{\"get\":{\"tags\":[\"WeatherForecast\"],\"description\":\"Shows a weather forecast for the next 5 days.\",\"responses\":{\"200\":{\"description\":\"OK\",\"content\":{\"application/json\":{\"schema\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/WeatherForecast\"}}}}}}}},\"/user/{id}\":{\"delete\":{\"tags\":[\"Users\"],\"description\":\"Deletes a user.\",\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"required\":true,\"schema\":{\"type\":\"string\",\"format\":\"uuid\"}}],\"responses\":{\"200\":{\"description\":\"OK\"}}},\"get\":{\"tags\":[\"Users\"],\"description\":\"Gets a user.\",\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"required\":true,\"schema\":{\"type\":\"string\",\"format\":\"uuid\"}}],\"responses\":{\"200\":{\"description\":\"OK\"}}},\"put\":{\"tags\":[\"Users\"],\"description\":\"Updates a user.\",\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"required\":true,\"schema\":{\"type\":\"string\",\"format\":\"uuid\"}},{\"name\":\"name\",\"in\":\"query\",\"required\":true,\"schema\":{\"type\":\"string\"}}],\"responses\":{\"200\":{\"description\":\"OK\"}}}},\"/users\":{\"get\":{\"tags\":[\"Users\"],\"description\":\"Gets all users.\",\"responses\":{\"200\":{\"description\":\"OK\"}}}},\"/user/{name}\":{\"post\":{\"tags\":[\"Users\"],\"description\":\"Creates a user.\",\"parameters\":[{\"name\":\"name\",\"in\":\"path\",\"required\":true,\"schema\":{\"type\":\"string\"}}],\"responses\":{\"200\":{\"description\":\"OK\"}}}}},\"components\":{\"schemas\":{\"WeatherForecast\":{\"required\":[\"date\",\"temperatureC\",\"summary\"],\"type\":\"object\",\"properties\":{\"date\":{\"type\":\"string\",\"format\":\"date\"},\"temperatureC\":{\"type\":\"integer\",\"format\":\"int32\"},\"summary\":{\"type\":\"string\",\"nullable\":true},\"temperatureF\":{\"type\":\"integer\",\"format\":\"int32\"}}}}},\"tags\":[{\"name\":\"WeatherForecast\"},{\"name\":\"Users\"}]}");
+})
+.ExcludeFromDescription();
 
 app.Run();
 

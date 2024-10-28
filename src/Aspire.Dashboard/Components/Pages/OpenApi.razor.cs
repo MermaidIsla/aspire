@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text.Json;
+using Aspire.Dashboard.Components.Dialogs;
 using Aspire.Dashboard.Components.Layout;
 using Aspire.Dashboard.Extensions;
 using Aspire.Dashboard.Model;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
+using static Aspire.Dashboard.Components.Dialogs.OpenApiResponseDialog;
 
 namespace Aspire.Dashboard.Components.Pages;
 
@@ -30,6 +32,9 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
 
     [Inject]
     public required IDashboardClient DashboardClient { get; init; }
+
+    [Inject]
+    public required IDialogService DialogService { get; init; }
 
     [Inject]
     public required HttpClient HttpClient { get; init; }
@@ -50,6 +55,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     public string? ResourceName { get; set; }
 
     private OpenApiSubscription? _openApiSubscription;
+    private IDialogReference? _openPageDialog;
     private ImmutableList<SelectViewModel<ResourceTypeDetails>>? _resources;
     private readonly ConcurrentDictionary<string, ResourceViewModel> _resourceByName = new(StringComparers.ResourceName);
     private readonly CancellationTokenSource _resourceSubscriptionCts = new();
@@ -65,6 +71,13 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
 
     // Icons
     private static readonly Icon s_playIcon = new Icons.Filled.Size24.Play();
+
+    // Colors
+    private const string HttpMethodDefaultColor = "gray";
+    private const string HttpMethodDeleteColor = "red";
+    private const string HttpMethodGetColor = "cornflowerblue";
+    private const string HttpMethodPostColor = "green";
+    private const string HttpMethodPutColor = "darkorange";
 
     public string BasePath => DashboardUrls.OpenApiBasePath;
     public string SessionStorageKey => BrowserStorageKeys.OpenApiPageState;
@@ -91,10 +104,15 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         return DashboardUrls.OpenApiUrl(serializable.SelectedResource);
     }
 
+    private void HandleDialogClose()
+    {
+        _openPageDialog = null;
+    }
+
     private async Task HandleSelectedOptionChangedAsync()
     {
         PageViewModel.SelectedResource = PageViewModel.SelectedOption?.Id?.InstanceId is null ? null : _resourceByName[PageViewModel.SelectedOption.Id.InstanceId];
-        await this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: false);
+        await this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: true);
     }
 
     private Task HandleSelectedTreeItemChangedAsync()
@@ -108,7 +126,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             PageViewModel.SelectedMethod = null;
         }
 
-        return this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: false);
+        return this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: true);
     }
 
     private async Task LoadOpenAPISpecification()
@@ -347,8 +365,33 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
                     {
                         IsInPath = parameter.In == ParameterLocation.Path,
                         IsInQuery = parameter.In == ParameterLocation.Query,
+                        IsRequired = parameter.Required,
                         Name = parameter.Name
                     });
+                }
+
+                var method = HttpMethod.Parse(operation.Key.ToString());
+                var color = string.Empty;
+
+                if (method == HttpMethod.Delete)
+                {
+                    color = HttpMethodDeleteColor;
+                }
+                else if(method == HttpMethod.Get)
+                {
+                    color = HttpMethodGetColor;
+                }
+                else if (method == HttpMethod.Post)
+                {
+                    color = HttpMethodPostColor;
+                }
+                else if (method == HttpMethod.Put)
+                {
+                    color = HttpMethodPutColor;
+                }
+                else
+                {
+                    color = HttpMethodDefaultColor;
                 }
 
                 foreach (var tag in operation.Value.Tags)
@@ -357,8 +400,11 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
                     {
                         methods.Add(new OpenApiViewModelMethod
                         {
-                            Method = HttpMethod.Parse(operation.Key.ToString()),
-                            Name = $"{path.Key} [{operation.Key}]",
+                            BadgeColor = color,
+                            Description = path.Value.Description,
+                            Id = $"{path.Key}-{operation.Key}".ToLower(),
+                            Method = method,
+                            Name = path.Key,
                             RequestParameters = parameters,
                             Url = baseUrl + path.Key
                         });
@@ -369,8 +415,11 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
                         {
                             new OpenApiViewModelMethod
                             {
-                                Method = HttpMethod.Parse(operation.Key.ToString()),
-                                Name = $"{path.Key} [{operation.Key}]",
+                                BadgeColor = color,
+                                Description = path.Value.Description,
+                                Id = $"{path.Key}-{operation.Key}".ToLower(),
+                                Method = method,
+                                Name = path.Key,
                                 RequestParameters = parameters,
                                 Url = baseUrl + path.Key
                             }
@@ -458,7 +507,33 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             method.Response = JsonSerializer.Serialize(jsonElement, options);
         }
 
-        await InvokeAsync(StateHasChanged);
+        DialogParameters parameters = new()
+        {
+            Title = Loc[nameof(Dashboard.Resources.OpenApi.OpenApiResponseDialogTitle)],
+            PrimaryAction = Loc[nameof(Dashboard.Resources.OpenApi.OpenApiResponseDialogClose)],
+            PrimaryActionEnabled = true,
+            SecondaryAction = null,
+            TrapFocus = true,
+            Modal = true,
+            Alignment = HorizontalAlignment.Center,
+            Width = "80%",
+            Height = "auto",
+            OnDialogClosing = EventCallback.Factory.Create<DialogInstance>(this, HandleDialogClose)
+        };
+
+        if (_openPageDialog is not null)
+        {
+            await _openPageDialog.CloseAsync();
+        }
+
+        _openPageDialog = await DialogService.ShowDialogAsync<OpenApiResponseDialog>(new OpenApiDialogViewModel
+        {
+            Body = method.Response,
+            ContentType = method.ResponseContentType!,
+            StatusCode = method.ResponseStatusCode
+        }, parameters).ConfigureAwait(true);
+
+        //await InvokeAsync(StateHasChanged);
     }
 
     private async Task StopAndClearOpenApiSubscriptionAsync()
@@ -529,12 +604,16 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     {
         public required bool IsInPath { get; set; }
         public required bool IsInQuery { get; set; }
+        public required bool IsRequired { get; set; }
         public required string Name { get; set; }
         public string? Value { get; set; }
     }
 
     public class OpenApiViewModelMethod
     {
+        public required string BadgeColor { get; set; }
+        public required string Description { get; set; }
+        public required string Id { get; set; }
         public required HttpMethod Method { get; set; }
         public required string Name { get; set; }
         public required List<OpenApiViewModelParameter> RequestParameters { get; set; }

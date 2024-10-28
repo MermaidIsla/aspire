@@ -12,7 +12,7 @@
         AddNewlineOnToolbar="true"
         @ref="_contentLayout"
         HeaderStyle="margin-bottom: calc(var(--design-unit) * 2px);"
-        MobileToolbarButtonText="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectResourceToolbar)]">
+        MobileToolbarButtonText="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiViewAttributesToolbar)]">
         <PageTitleSection>
             <h1 class="page-header">@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiHeader)]</h1>
         </PageTitleSection>
@@ -21,6 +21,27 @@
                             AriaLabel="@ControlsStringsLoc[nameof(ControlsStrings.ResourceLabel)]"
                             @bind-SelectedResource="PageViewModel.SelectedOption"
                             @bind-SelectedResource:after="HandleSelectedOptionChangedAsync" />
+
+            @if (!ViewportInformation.IsDesktop && PageViewModel.Methods != null)
+            {
+                <FluentInputLabel Label="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectAMethod)]" ForId="method-selector" />
+                <FluentTreeView Id="method-selector" Class="method-tree" @bind-CurrentSelected="@PageViewModel.SelectedTreeItem" @bind-CurrentSelected:after="HandleSelectedTreeItemChangedAsync">
+                    <ChildContent>
+                        @foreach (var tag in PageViewModel.Methods.OrderBy(g => g.Key))
+                        {
+                            <FluentTreeItem @key="tag.Key" Text="@tag.Key" Data="@tag.Key" title="@tag.Key" InitiallyExpanded="true" InitiallySelected="false">
+                                @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
+                                {
+                                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" title="@method.Description" InitiallySelected="false">
+                                        <span style="margin-right: 8px">@method.Name</span>
+                                        <FluentBadge BackgroundColor="@method.BadgeColor" Color="white" Fill="@method.BadgeColor" Style="margin-right: 16px">@method.Method.ToString()</FluentBadge>
+                                    </FluentTreeItem>
+                                }
+                            </FluentTreeItem>
+                        }
+                    </ChildContent>
+                </FluentTreeView>
+            }
         </ToolbarSection>
         <MainSection>
             <div style="width: 100%; height: 100%; overflow: auto;">
@@ -73,9 +94,12 @@
                                         @foreach (var tag in PageViewModel.Methods.OrderBy(g => g.Key))
                                         {
                                             <FluentTreeItem @key="tag.Key" Text="@tag.Key" Data="@tag.Key" title="@tag.Key" InitiallyExpanded="true" InitiallySelected="false">
-                                                @foreach (var method in tag.Value.OrderBy(i => i.Name))
+                                                @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
                                                 {
-                                                    <FluentTreeItem @key="method.Name" Class="nested" Text="@method.Name" Data="@method" title="@method.Name" InitiallySelected="false" />
+                                                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" title="@method.Description" InitiallySelected="false">
+                                                        <span style="margin-right: 8px">@method.Name</span>
+                                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="@method.BadgeColor" Color="white">@method.Method.ToString()</FluentBadge>
+                                                    </FluentTreeItem>
                                                 }
                                             </FluentTreeItem>
                                         }
@@ -87,81 +111,96 @@
                             <div class="method-content">
                                 @if (PageViewModel.SelectedMethod == null)
                                 {
-                                    <p>@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectMethod)]</p>
+                                    @if (ViewportInformation.IsDesktop)
+                                    {
+                                        <p>@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectMethod)]</p>
+                                    }
+                                    else
+                                    {
+                                        <div class="empty-content">
+                                            <FluentAnchor Href="#" Appearance="Appearance.Hypertext" OnClick="@(async () => await _contentLayout!.OpenMobileToolbarAsync())">
+                                                @Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectMethod)]
+                                            </FluentAnchor>
+                                        </div>
+                                    }
                                 }
                                 else
                                 {
                                     <h3>Request:</h3>
-                                    <div>
-                                        <FluentTextField Label="Url" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url" />
-                                        <FluentButton Appearance="Appearance.Outline" OnClick="@SendRequest">
-                                            <FluentIcon Value="@s_playIcon" Width="16px" />
-                                            <span>Send request</span>
-                                        </FluentButton>
-                                    </div>
-                                    @foreach (var parameter in PageViewModel.SelectedMethod.RequestParameters)
+                                    <FluentGrid>
+                                        @if (ViewportInformation.IsDesktop)
+                                        {
+                                            <FluentGridItem sm="2" xl="1">
+                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Method.ToString()" />
+                                            </FluentGridItem>
+                                            <FluentGridItem sm="7" xl="9" xxl="10">
+                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url" />
+                                            </FluentGridItem>  
+                                            <FluentGridItem sm="3" xl="2" xxl="1">
+                                                <FluentButton Style="width: 100%" Appearance="Appearance.Outline" OnClick="@SendRequest">
+                                                    <FluentIcon Value="@s_playIcon" Width="12px" />
+                                                    <span>@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSendRequest)]</span>
+                                                </FluentButton>
+                                            </FluentGridItem>
+                                        }
+                                        else
+                                        {
+                                            <FluentGridItem xs="12" sm="12">
+                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url" />
+                                            </FluentGridItem>
+                                            <FluentGridItem xs="12" sm="4">
+                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Method.ToString()" />
+                                            </FluentGridItem>
+                                            <FluentGridItem xs="12" sm="8">
+                                                <FluentButton Style="width: 100%" Appearance="Appearance.Outline" OnClick="@SendRequest">
+                                                    <FluentIcon Value="@s_playIcon" Width="12px" />
+                                                    <span>@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSendRequest)]</span>
+                                                </FluentButton>
+                                            </FluentGridItem>
+                                        }
+                                    </FluentGrid>
+                                    @if (PageViewModel.SelectedMethod.RequestParameters.Count > 0)
                                     {
-                                        <div>
-                                            <FluentTextField Label="@($"Parameter: {parameter.Name}")" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })" />
-                                        </div>
+                                        <h5 style="margin-top: 16px">Parameters:</h5>
+                                        <FluentGrid>
+                                            @if (ViewportInformation.IsDesktop)
+                                            {
+                                                @foreach (var parameter in PageViewModel.SelectedMethod.RequestParameters)
+                                                {
+                                                    <FluentGridItem sm="4" md="3" xl="2" xxl="1">
+                                                        <span>@parameter.Name</span>
+                                                        @if (parameter.IsRequired)
+                                                        {
+                                                            <span style="color: lightcoral"> *</span>
+                                                        }
+                                                    </FluentGridItem>
+                                                    <FluentGridItem sm="8" md="9" xl="10" xxl="11">
+                                                        <FluentTextField Style="width: 100%" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })" />
+                                                    </FluentGridItem>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @foreach (var parameter in PageViewModel.SelectedMethod.RequestParameters)
+                                                {
+                                                    <FluentGridItem xs="12" sm="12">
+                                                        <span>@parameter.Name</span>
+                                                        @if (parameter.IsRequired)
+                                                        {
+                                                            <span style="color: lightcoral"> *</span>
+                                                        }
+                                                    </FluentGridItem>
+                                                    <FluentGridItem xs="12" sm="12">
+                                                        <FluentTextField Style="width: 100%" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })" />
+                                                    </FluentGridItem>
+                                                }
+                                            }
+                                        </FluentGrid>
                                     }
-                                    <h3>Response:</h3>
-                                    <div>
-                                        <FluentTextField Label="Status Code" ReadOnly="true" Value="@PageViewModel.SelectedMethod.ResponseStatusCode" />
-                                    </div>
-                                    <div>
-                                        <FluentTextField Label="Content Type" ReadOnly="true" Value="@PageViewModel.SelectedMethod.ResponseContentType" />
-                                    </div>
-                                    <div>
-                                        <FluentTextArea Cols="80" Rows="10" Label="Body" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Response" />
-                                    </div>
                                 }
                             </div>
                         </Panel2>
                     </FluentSplitter>
-                    <!--<div>
-                        <h1>Info</h1>
-                        @PageViewModel.Document.Info.Title
-                        @PageViewModel.Document.Info.Version
-                    </div>
-                    <div>
-                        <h1>Servers</h1>
-                        @foreach (var server in PageViewModel.Document.Servers)
-                        {
-                            @server.Url
-                            ;
-                        }
-                    </div>
-                    <div>
-                        <h1>Paths</h1>
-                        @foreach (var path in PageViewModel.Document.Paths)
-                        {
-                            @path.Key;
-                            <h2>Methods</h2>
-                            @if (path.Value.Operations.Count == 0)
-                            {
-                                <p>No methods found!</p>
-                            }
-                            else
-                            {
-                                @foreach (var operation in path.Value.Operations)
-                                {
-                                    @operation.Key;
-                                    <h3>Tags</h3>
-                                    @foreach (var tag in operation.Value.Tags)
-                                    {
-                                        @tag.Name;
-                                    }
-                                    <h3>Responses</h3>
-                                    @foreach (var response in operation.Value.Responses)
-                                    {
-                                        @response.Key;
-                                        @response.Value.Description;
-                                    }
-                                }
-                            }
-                        }
-                    </div>-->
                 }
             </div>
         </MainSection>

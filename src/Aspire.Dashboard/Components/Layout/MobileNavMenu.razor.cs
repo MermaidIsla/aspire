@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.RegularExpressions;
@@ -48,6 +48,13 @@ public partial class MobileNavMenu : ComponentBase
                 () => NavigateToAsync(DashboardUrls.ConsoleLogsUrl()),
                 DesktopNavMenu.ConsoleLogsIcon(),
                 LinkMatchRegex: GetNonIndexPageRegex(DashboardUrls.ConsoleLogsUrl())
+            );
+
+            yield return new MobileNavMenuEntry(
+                Loc[nameof(Resources.Layout.NavMenuOpenApiTab)],
+                () => NavigateToAsync(DashboardUrls.OpenApiUrl()),
+                DesktopNavMenu.OpenApiIcon(),
+                LinkMatchRegex: GetNonIndexPageRegex(DashboardUrls.OpenApiUrl())
             );
         }
 

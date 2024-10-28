@@ -645,9 +645,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DaprServiceC", "playground\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenAPI", "OpenAPI", "{A6AAE8DF-2D64-4E51-9D7E-AFCCD2DFEB4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAPI.AppHost", "playground\OpenAPI\OpenAPI.AppHost\OpenAPI.AppHost.csproj", "{BB9B5A99-6C04-4DB5-8028-BEE9A7CA0BFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAPI.AppHost", "playground\OpenAPI\OpenAPI.AppHost\OpenAPI.AppHost.csproj", "{BB9B5A99-6C04-4DB5-8028-BEE9A7CA0BFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAPI.ServiceDefaults", "playground\OpenAPI\OpenAPI.ServiceDefaults\OpenAPI.ServiceDefaults.csproj", "{AFBF4A81-F7C2-4AE3-9143-B67BDB8C11C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAPI.ServiceDefaults", "playground\OpenAPI\OpenAPI.ServiceDefaults\OpenAPI.ServiceDefaults.csproj", "{AFBF4A81-F7C2-4AE3-9143-B67BDB8C11C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenAPI.ApiService", "playground\OpenAPI\OpenAPI.ApiService\OpenAPI.ApiService.csproj", "{FB1A25E7-9864-42C2-B688-B64F2A8B45FD}"
 EndProject
