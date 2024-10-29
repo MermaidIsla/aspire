@@ -70,7 +70,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     public OpenApiViewModel PageViewModel { get; set; } = null!;
 
     // Icons
-    private static readonly Icon s_playIcon = new Icons.Filled.Size24.Play();
+    private static readonly Icon s_playIcon = new Icons.Filled.Size16.Play();
 
     // Colors
     private const string HttpMethodDefaultColor = "gray";
