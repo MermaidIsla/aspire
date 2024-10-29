@@ -17,7 +17,7 @@
                     @_headers.Count()
                 </FluentBadge>
                 <PropertyGrid TItem="OpenApiResponseHeader"
-                              Items="@_headers"
+                              Items="@FilteredHeaders"
                               IsValueSortable="false"
                               HighlightText="@_filter"
                               GridTemplateColumns="1fr 1.5fr" />
