@@ -165,7 +165,9 @@
                                                         }
                                                     </FluentGridItem>
                                                     <FluentGridItem sm="8" md="9" xl="10" xxl="11">
-                                                        <FluentTextField Placeholder="@parameter.Type" Style="width: 100%" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })" />
+                                                        <FluentTextField Placeholder="@parameter.Type" Style="width: 100%" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })">
+                                                            <FluentBadge BackgroundColor="@ParameterTypeColor" Fill="highlight" slot="end">@parameter.Type</FluentBadge>
+                                                        </FluentTextField>
                                                     </FluentGridItem>
                                                 }
                                             }
@@ -181,7 +183,9 @@
                                                         }
                                                     </FluentGridItem>
                                                     <FluentGridItem xs="12" sm="12">
-                                                        <FluentTextField Placeholder="@parameter.Type" Style="width: 100%" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })" />
+                                                        <FluentTextField Placeholder="@parameter.Type" Style="width: 100%" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })">
+                                                            <FluentBadge BackgroundColor="@ParameterTypeColor" Fill="highlight" slot="end">@parameter.Type</FluentBadge>
+                                                        </FluentTextField>
                                                     </FluentGridItem>
                                                 }
                                             }

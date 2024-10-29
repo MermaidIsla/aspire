@@ -78,6 +78,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     private const string HttpMethodGetColor = "cornflowerblue";
     private const string HttpMethodPostColor = "green";
     private const string HttpMethodPutColor = "darkorange";
+    private const string ParameterTypeColor = "gray";
 
     public string BasePath => DashboardUrls.OpenApiBasePath;
     public string SessionStorageKey => BrowserStorageKeys.OpenApiPageState;
