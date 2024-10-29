@@ -366,7 +366,8 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
                         IsInPath = parameter.In == ParameterLocation.Path,
                         IsInQuery = parameter.In == ParameterLocation.Query,
                         IsRequired = parameter.Required,
-                        Name = parameter.Name
+                        Name = parameter.Name,
+                        Type = string.IsNullOrEmpty(parameter.Schema.Format) ? parameter.Schema.Type : parameter.Schema.Format
                     });
                 }
 
@@ -606,6 +607,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         public required bool IsInQuery { get; set; }
         public required bool IsRequired { get; set; }
         public required string Name { get; set; }
+        public required string Type { get; set; }
         public string? Value { get; set; }
     }
 
