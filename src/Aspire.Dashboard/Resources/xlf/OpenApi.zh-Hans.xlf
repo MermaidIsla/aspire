@@ -3,8 +3,8 @@
   <file datatype="xml" source-language="en" target-language="zh-Hans" original="../OpenApi.resx">
     <body>
       <trans-unit id="OpenApiHeader">
-        <source>OpenAPI specifications</source>
-        <target state="new">OpenAPI specifications</target>
+        <source>OpenAPI</source>
+        <target state="new">OpenAPI</target>
         <note />
       </trans-unit>
       <trans-unit id="OpenApiNoSpecificationForResource">
@@ -13,8 +13,8 @@
         <note />
       </trans-unit>
       <trans-unit id="OpenApiPageTitle">
-        <source>{0} OpenAPI specifications</source>
-        <target state="new">{0} OpenAPI specifications</target>
+        <source>{0} OpenAPI</source>
+        <target state="new">{0} OpenAPI</target>
         <note>{0} is an application name</note>
       </trans-unit>
       <trans-unit id="OpenApiResponseDialogClose">
