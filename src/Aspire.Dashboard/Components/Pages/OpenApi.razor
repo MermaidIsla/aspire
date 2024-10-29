@@ -124,11 +124,10 @@
                                     <FluentGrid>
                                         @if (ViewportInformation.IsDesktop)
                                         {
-                                            <FluentGridItem sm="2" xl="1">
-                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Method.ToString()" />
-                                            </FluentGridItem>
-                                            <FluentGridItem sm="7" xl="9" xxl="10">
-                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url" />
+                                            <FluentGridItem sm="9" xl="10" xxl="11">
+                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url">
+                                                    <FluentBadge BackgroundColor="@PageViewModel.SelectedMethod.BadgeColor" Fill="highlight" slot="start">@PageViewModel.SelectedMethod.Method.ToString()</FluentBadge>
+                                                </FluentTextField>
                                             </FluentGridItem>
                                             <FluentGridItem sm="3" xl="2" xxl="1">
                                                 <FluentButton Style="width: 100%" Appearance="Appearance.Outline" OnClick="@SendRequest">
@@ -139,13 +138,12 @@
                                         }
                                         else
                                         {
-                                            <FluentGridItem xs="12" sm="12">
-                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url" />
+                                            <FluentGridItem xs="12">
+                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url">
+                                                    <FluentBadge BackgroundColor="@PageViewModel.SelectedMethod.BadgeColor" Fill="highlight" slot="start">@PageViewModel.SelectedMethod.Method.ToString()</FluentBadge>
+                                                </FluentTextField>
                                             </FluentGridItem>
-                                            <FluentGridItem xs="12" sm="4">
-                                                <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Method.ToString()" />
-                                            </FluentGridItem>
-                                            <FluentGridItem xs="12" sm="8">
+                                            <FluentGridItem xs="12">
                                                 <FluentButton Style="width: 100%" Appearance="Appearance.Outline" OnClick="@SendRequest">
                                                     <FluentIcon Value="@s_playIcon" Width="12px" />
                                                     <span>@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSendRequest)]</span>
