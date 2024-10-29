@@ -1,0 +1,31 @@
+﻿@using Aspire.Dashboard.Resources
+
+@inject IStringLocalizer<ControlsStrings> ControlStringsLoc
+
+<div class="openapi-response-layout">
+    <FluentToolbar Orientation="Orientation.Horizontal">
+        <FluentSearch Placeholder="@ControlStringsLoc[nameof(ControlsStrings.FilterPlaceholder)]"
+                      Immediate="true"
+                      Autofocus="true"
+                      @bind-Value="_filter"
+                      slot="end" />
+    </FluentToolbar>
+    <div class="property-grid-container">
+        <FluentAccordion>
+            <FluentAccordionItem Heading="Headers" Expanded="true">
+                <FluentBadge Appearance="Appearance.Neutral" Circular="true" slot="end">
+                    @_headers.Count()
+                </FluentBadge>
+                <PropertyGrid TItem="OpenApiResponseHeader"
+                              Items="@_headers"
+                              IsValueSortable="false"
+                              HighlightText="@_filter"
+                              GridTemplateColumns="1fr 1.5fr" />
+            </FluentAccordionItem>
+
+            <FluentAccordionItem Heading="Body" Expanded="true">
+                <TextVisualizer ItemSize="16" Text="@_body" />
+            </FluentAccordionItem>
+        </FluentAccordion>
+    </div>
+</div>

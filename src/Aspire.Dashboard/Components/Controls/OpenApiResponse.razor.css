@@ -1,0 +1,13 @@
+::deep.openapi-response-layout {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "toolbar"
+        "main";
+    overflow: auto;
+    gap: calc(var(--design-unit) * 1px);
+}
+
+::deep.openapi-response-layout > fluent-toolbar {
+    grid-area: toolbar;
+}
