@@ -1,0 +1,29 @@
+﻿@using Aspire.Dashboard.Resources
+
+@inject IStringLocalizer<OpenApi> Loc
+
+@if (PageViewModel.Methods is null)
+{
+    return;
+}
+
+@if (IncludeLabel)
+{
+    <FluentInputLabel Label="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectAMethod)]" ForId="method-selector" />
+}
+
+<FluentTreeView Id="method-selector" Class="method-tree" @bind-CurrentSelected="@PageViewModel.SelectedTreeItem" @bind-CurrentSelected:after="HandleSelectedTreeItemChangedAsync">
+    <ChildContent>
+        @foreach (var tag in PageViewModel.Methods.OrderBy(g => g.Key))
+        {
+            <FluentTreeItem @key="tag.Key" Text="@tag.Key" Data="@tag.Key" title="@tag.Key" InitiallyExpanded="true" InitiallySelected="false">
+                @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
+                {
+                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" Text="@method.Name" title="@method.Description" InitiallySelected="false">
+                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="highlight" Style="margin-right: 16px" slot="end">@method.Method.ToString()</FluentBadge>
+                    </FluentTreeItem>
+                }
+            </FluentTreeItem>
+        }
+    </ChildContent>
+</FluentTreeView>
