@@ -4,8 +4,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Text.Json;
-using Aspire.Dashboard.Components.Dialogs;
 using Aspire.Dashboard.Components.Layout;
 using Aspire.Dashboard.Extensions;
 using Aspire.Dashboard.Model;
@@ -18,7 +16,6 @@ using Microsoft.Extensions.Localization;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
-using static Aspire.Dashboard.Components.Dialogs.OpenApiResponseDialog;
 
 namespace Aspire.Dashboard.Components.Pages;
 
@@ -55,7 +52,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     public string? ResourceName { get; set; }
 
     private OpenApiSubscription? _openApiSubscription;
-    private IDialogReference? _openPageDialog;
     private ImmutableList<SelectViewModel<ResourceTypeDetails>>? _resources;
     private readonly ConcurrentDictionary<string, ResourceViewModel> _resourceByName = new(StringComparers.ResourceName);
     private readonly CancellationTokenSource _resourceSubscriptionCts = new();
@@ -83,6 +79,16 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     public string BasePath => DashboardUrls.OpenApiBasePath;
     public string SessionStorageKey => BrowserStorageKeys.OpenApiPageState;
 
+    private void ClearMethodResponse()
+    {
+        if (PageViewModel.SelectedMethod is null)
+        {
+            return;
+        }
+
+        PageViewModel.SelectedMethod.Response = null;
+    }
+
     public OpenApiPageState ConvertViewModelToSerializable()
     {
         return new OpenApiPageState
@@ -103,11 +109,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     public string GetUrlFromSerializableViewModel(OpenApiPageState serializable)
     {
         return DashboardUrls.OpenApiUrl(serializable.SelectedResource);
-    }
-
-    private void HandleDialogClose()
-    {
-        _openPageDialog = null;
     }
 
     private async Task HandleSelectedOptionChangedAsync()
@@ -482,60 +483,11 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             }
         }
 
-        var response = await HttpClient.SendAsync(new HttpRequestMessage
+        method.Response = await HttpClient.SendAsync(new HttpRequestMessage
         {
             Method = method.Method,
             RequestUri = new Uri(url)
         });
-
-        method.Response = await response.Content.ReadAsStringAsync();
-        method.ResponseStatusCode = $"{(int)response.StatusCode} {response.StatusCode}";
-        foreach (var header in response.Content.Headers)
-        {
-            if (header.Key == "Content-Type")
-            {
-                method.ResponseContentType = header.Value.First();
-            }
-        }
-
-        if (method.ResponseContentType != null && method.ResponseContentType.Contains("application/json"))
-        {
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-
-            var jsonElement = JsonSerializer.Deserialize<JsonElement>(method.Response);
-            method.Response = JsonSerializer.Serialize(jsonElement, options);
-        }
-
-        DialogParameters parameters = new()
-        {
-            Title = Loc[nameof(Dashboard.Resources.OpenApi.OpenApiResponseDialogTitle)],
-            PrimaryAction = Loc[nameof(Dashboard.Resources.OpenApi.OpenApiResponseDialogClose)],
-            PrimaryActionEnabled = true,
-            SecondaryAction = null,
-            TrapFocus = true,
-            Modal = true,
-            Alignment = HorizontalAlignment.Center,
-            Width = "80%",
-            Height = "auto",
-            OnDialogClosing = EventCallback.Factory.Create<DialogInstance>(this, HandleDialogClose)
-        };
-
-        if (_openPageDialog is not null)
-        {
-            await _openPageDialog.CloseAsync();
-        }
-
-        _openPageDialog = await DialogService.ShowDialogAsync<OpenApiResponseDialog>(new OpenApiDialogViewModel
-        {
-            Body = method.Response,
-            ContentType = method.ResponseContentType!,
-            StatusCode = method.ResponseStatusCode
-        }, parameters).ConfigureAwait(true);
-
-        //await InvokeAsync(StateHasChanged);
     }
 
     private async Task StopAndClearOpenApiSubscriptionAsync()
@@ -572,6 +524,11 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         return Task.CompletedTask;
     }
 
+    public class OpenApiPageState
+    {
+        public string? SelectedResource { get; set; }
+    }
+
     private sealed class OpenApiSubscription
     {
         private static int s_subscriptionId;
@@ -585,11 +542,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         public CancellationToken CancellationToken => _cts.Token;
         public int SubscriptionId => _subscriptionId;
         public void Cancel() => _cts.Cancel();
-    }
-
-    public class OpenApiPageState
-    {
-        public string? SelectedResource { get; set; }
     }
 
     public class OpenApiViewModel
@@ -620,9 +572,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         public required HttpMethod Method { get; set; }
         public required string Name { get; set; }
         public required List<OpenApiViewModelParameter> RequestParameters { get; set; }
-        public string? Response { get; set; }
-        public string? ResponseContentType { get; set; }
-        public string? ResponseStatusCode { get; set; }
+        public HttpResponseMessage? Response { get; set; }
         public required string Url { get; set; }
     }
 
