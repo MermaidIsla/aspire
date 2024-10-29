@@ -28,8 +28,9 @@
             @if (!ViewportInformation.IsDesktop && PageViewModel.Methods != null)
             {
                 <TreeOpenApiMethodSelector
-                    HandleSelectedTreeItemChangedAsync="HandleSelectedTreeItemChangedAsync"
-                    PageViewModel="PageViewModel"
+                    @ref="_treeOpenApiMethodSelector"
+                    HandleSelectedTreeItemChangedAsync="@HandleSelectedTreeItemChangedAsync"
+                    PageViewModel="@PageViewModel"
                     IncludeLabel="true"/>
             }
         </ToolbarSection>
@@ -78,8 +79,9 @@
                             @if (ViewportInformation.IsDesktop)
                             {
                                 <TreeOpenApiMethodSelector
-                                    HandleSelectedTreeItemChangedAsync="HandleSelectedTreeItemChangedAsync"
-                                    PageViewModel="PageViewModel"
+                                    @ref="_treeOpenApiMethodSelector"
+                                    HandleSelectedTreeItemChangedAsync="@HandleSelectedTreeItemChangedAsync"
+                                    PageViewModel="@PageViewModel"
                                     IncludeLabel="false"/>
                             }
                         </Panel1>

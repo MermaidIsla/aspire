@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using Aspire.Dashboard.Components.Controls;
 using Aspire.Dashboard.Components.Layout;
 using Aspire.Dashboard.Extensions;
 using Aspire.Dashboard.Model;
@@ -57,6 +58,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     private readonly CancellationTokenSource _resourceSubscriptionCts = new();
     private Task? _resourceSubscriptionTask;
     private CancellationToken _resourceSubscriptionToken;
+    private TreeOpenApiMethodSelector? _treeOpenApiMethodSelector;
 
     // UI
     private SelectViewModel<ResourceTypeDetails> _noSelection = null!;
@@ -117,7 +119,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         await this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: true);
     }
 
-    private Task HandleSelectedTreeItemChangedAsync()
+    private async Task HandleSelectedTreeItemChangedAsync()
     {
         if (PageViewModel.SelectedTreeItem?.Data is OpenApiViewModelMethod method)
         {
@@ -128,7 +130,8 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             PageViewModel.SelectedMethod = null;
         }
 
-        return this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: true);
+        await this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: true);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadOpenAPISpecification()
