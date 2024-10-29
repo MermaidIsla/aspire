@@ -32,9 +32,8 @@
                             <FluentTreeItem @key="tag.Key" Text="@tag.Key" Data="@tag.Key" title="@tag.Key" InitiallyExpanded="true" InitiallySelected="false">
                                 @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
                                 {
-                                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" title="@method.Description" InitiallySelected="false">
-                                        <span style="margin-right: 8px">@method.Name</span>
-                                        <FluentBadge BackgroundColor="@method.BadgeColor" Color="white" Fill="@method.BadgeColor" Style="margin-right: 16px">@method.Method.ToString()</FluentBadge>
+                                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" Text="@method.Name" title="@method.Description" InitiallySelected="false">
+                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="@method.BadgeColor" Style="margin-right: 16px" slot="end">@method.Method.ToString()</FluentBadge>
                                     </FluentTreeItem>
                                 }
                             </FluentTreeItem>
@@ -65,16 +64,12 @@
                     <div class="empty-content">
                         @if (ViewportInformation.IsDesktop)
                         {
-                            <FluentIcon Icon="Icons.Regular.Size24.CodeBlock" />
-
-                            @:&nbsp;
+                            <FluentIcon Icon="Icons.Regular.Size24.CodeBlock" />@:&nbsp;
                             @Loc[nameof(Dashboard.Resources.OpenApi.OpenApiNoSpecificationForResource)]
                         }
                         else
                         {
-                            <FluentIcon Icon="Icons.Regular.Size24.CodeBlock" />
-
-                            @:&nbsp;
+                            <FluentIcon Icon="Icons.Regular.Size24.CodeBlock" />@:&nbsp;
                             <FluentAnchor Href="#" Appearance="Appearance.Hypertext" OnClick="@(async () => await _contentLayout!.OpenMobileToolbarAsync())">@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiNoSpecificationForResource)]</FluentAnchor>
                         }
                     </div>
@@ -96,9 +91,8 @@
                                             <FluentTreeItem @key="tag.Key" Text="@tag.Key" Data="@tag.Key" title="@tag.Key" InitiallyExpanded="true" InitiallySelected="false">
                                                 @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
                                                 {
-                                                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" title="@method.Description" InitiallySelected="false">
-                                                        <span style="margin-right: 8px">@method.Name</span>
-                                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="@method.BadgeColor" Color="white">@method.Method.ToString()</FluentBadge>
+                                                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" Text="@method.Name" title="@method.Description" InitiallySelected="false">
+                                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="@method.BadgeColor" slot="end">@method.Method.ToString()</FluentBadge>
                                                     </FluentTreeItem>
                                                 }
                                             </FluentTreeItem>
@@ -135,7 +129,7 @@
                                             </FluentGridItem>
                                             <FluentGridItem sm="7" xl="9" xxl="10">
                                                 <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url" />
-                                            </FluentGridItem>  
+                                            </FluentGridItem>
                                             <FluentGridItem sm="3" xl="2" xxl="1">
                                                 <FluentButton Style="width: 100%" Appearance="Appearance.Outline" OnClick="@SendRequest">
                                                     <FluentIcon Value="@s_playIcon" Width="12px" />
