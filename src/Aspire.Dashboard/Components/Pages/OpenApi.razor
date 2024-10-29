@@ -19,29 +19,18 @@
             <h1 class="page-header">@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiHeader)]</h1>
         </PageTitleSection>
         <ToolbarSection>
-            <ResourceSelect Resources="_resources"
-                            AriaLabel="@ControlsStringsLoc[nameof(ControlsStrings.ResourceLabel)]"
-                            @bind-SelectedResource="PageViewModel.SelectedOption"
-                            @bind-SelectedResource:after="HandleSelectedOptionChangedAsync" />
+            <ResourceSelect
+                Resources="_resources"
+                AriaLabel="@ControlsStringsLoc[nameof(ControlsStrings.ResourceLabel)]"
+                @bind-SelectedResource="PageViewModel.SelectedOption"
+                @bind-SelectedResource:after="HandleSelectedOptionChangedAsync" />
 
             @if (!ViewportInformation.IsDesktop && PageViewModel.Methods != null)
             {
-                <FluentInputLabel Label="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectAMethod)]" ForId="method-selector" />
-                <FluentTreeView Id="method-selector" Class="method-tree" @bind-CurrentSelected="@PageViewModel.SelectedTreeItem" @bind-CurrentSelected:after="HandleSelectedTreeItemChangedAsync">
-                    <ChildContent>
-                        @foreach (var tag in PageViewModel.Methods.OrderBy(g => g.Key))
-                        {
-                            <FluentTreeItem @key="tag.Key" Text="@tag.Key" Data="@tag.Key" title="@tag.Key" InitiallyExpanded="true" InitiallySelected="false">
-                                @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
-                                {
-                                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" Text="@method.Name" title="@method.Description" InitiallySelected="false">
-                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="highlight" Style="margin-right: 16px" slot="end">@method.Method.ToString()</FluentBadge>
-                                    </FluentTreeItem>
-                                }
-                            </FluentTreeItem>
-                        }
-                    </ChildContent>
-                </FluentTreeView>
+                <TreeOpenApiMethodSelector
+                    HandleSelectedTreeItemChangedAsync="HandleSelectedTreeItemChangedAsync"
+                    PageViewModel="PageViewModel"
+                    IncludeLabel="true"/>
             }
         </ToolbarSection>
         <MainSection>
@@ -78,33 +67,25 @@
                 }
                 else
                 {
-                    <FluentSplitter BarHandle="@ViewportInformation.IsDesktop"
-                                    Style="height:100%"
-                                    Panel1Size="@(ViewportInformation.IsDesktop ? "2fr" : "0")"
-                                    Panel2Size="8fr"
-                                    BarSize="@(ViewportInformation.IsDesktop ? 5 : 0)">
+                    <FluentSplitter
+                        BarHandle="@ViewportInformation.IsDesktop"
+                        Style="height:100%"
+                        Panel1Size="@(ViewportInformation.IsDesktop ? "2fr" : "0")"
+                        Panel2Size="8fr"
+                        BarSize="@(ViewportInformation.IsDesktop ? 5 : 0)">
+
                         <Panel1>
                             @if (ViewportInformation.IsDesktop)
                             {
-                                <FluentTreeView Id="method-selector" Class="method-tree" @bind-CurrentSelected="@PageViewModel.SelectedTreeItem" @bind-CurrentSelected:after="HandleSelectedTreeItemChangedAsync">
-                                    <ChildContent>
-                                        @foreach (var tag in PageViewModel.Methods.OrderBy(g => g.Key))
-                                        {
-                                            <FluentTreeItem @key="tag.Key" Text="@tag.Key" Data="@tag.Key" title="@tag.Key" InitiallyExpanded="true" InitiallySelected="false">
-                                                @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
-                                                {
-                                                    <FluentTreeItem @key="method.Id" Class="nested" Data="@method" Text="@method.Name" title="@method.Description" InitiallySelected="false">
-                                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="highlight" slot="end">@method.Method.ToString()</FluentBadge>
-                                                    </FluentTreeItem>
-                                                }
-                                            </FluentTreeItem>
-                                        }
-                                    </ChildContent>
-                                </FluentTreeView>
+                                <TreeOpenApiMethodSelector
+                                    HandleSelectedTreeItemChangedAsync="HandleSelectedTreeItemChangedAsync"
+                                    PageViewModel="PageViewModel"
+                                    IncludeLabel="false"/>
                             }
                         </Panel1>
                         <Panel2>
-                            <SummaryDetailsView DetailsTitle="API Response"
+                            <SummaryDetailsView
+                                DetailsTitle="API Response"
                                 ShowDetails="@(PageViewModel.SelectedMethod?.Response is not null)"
                                 OnDismiss="@(() => ClearMethodResponse())"
                                 SelectedValue="@PageViewModel.SelectedMethod?.Response"
