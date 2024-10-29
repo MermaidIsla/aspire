@@ -33,7 +33,7 @@
                                 @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
                                 {
                                     <FluentTreeItem @key="method.Id" Class="nested" Data="@method" Text="@method.Name" title="@method.Description" InitiallySelected="false">
-                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="@method.BadgeColor" Style="margin-right: 16px" slot="end">@method.Method.ToString()</FluentBadge>
+                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="highlight" Style="margin-right: 16px" slot="end">@method.Method.ToString()</FluentBadge>
                                     </FluentTreeItem>
                                 }
                             </FluentTreeItem>
@@ -92,7 +92,7 @@
                                                 @foreach (var method in tag.Value.OrderBy(i => i.Method.ToString()).OrderBy(i => i.Name))
                                                 {
                                                     <FluentTreeItem @key="method.Id" Class="nested" Data="@method" Text="@method.Name" title="@method.Description" InitiallySelected="false">
-                                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="@method.BadgeColor" slot="end">@method.Method.ToString()</FluentBadge>
+                                                        <FluentBadge BackgroundColor="@method.BadgeColor" Fill="highlight" slot="end">@method.Method.ToString()</FluentBadge>
                                                     </FluentTreeItem>
                                                 }
                                             </FluentTreeItem>
