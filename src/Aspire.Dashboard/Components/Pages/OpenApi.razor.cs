@@ -52,6 +52,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     [Parameter]
     public string? ResourceName { get; set; }
 
+    private bool _sendingHttpRequest;
     private OpenApiSubscription? _openApiSubscription;
     private ImmutableList<SelectViewModel<ResourceTypeDetails>>? _resources;
     private readonly ConcurrentDictionary<string, ResourceViewModel> _resourceByName = new(StringComparers.ResourceName);
@@ -450,6 +451,8 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             return;
         }
 
+        _sendingHttpRequest = true;
+
         var method = PageViewModel.SelectedMethod;
         var url = method.Url;
         foreach (var parameter in method.RequestParameters)
@@ -491,6 +494,8 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             Method = method.Method,
             RequestUri = new Uri(url)
         });
+
+        _sendingHttpRequest = false;
     }
 
     private async Task StopAndClearOpenApiSubscriptionAsync()
