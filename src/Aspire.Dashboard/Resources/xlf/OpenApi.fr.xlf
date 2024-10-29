@@ -17,16 +17,6 @@
         <target state="new">{0} OpenAPI</target>
         <note>{0} is an application name</note>
       </trans-unit>
-      <trans-unit id="OpenApiResponseDialogClose">
-        <source>Close</source>
-        <target state="new">Close</target>
-        <note />
-      </trans-unit>
-      <trans-unit id="OpenApiResponseDialogTitle">
-        <source>Response</source>
-        <target state="new">Response</target>
-        <note />
-      </trans-unit>
       <trans-unit id="OpenApiSelectAMethod">
         <source>Select a method</source>
         <target state="new">Select a method</target>

@@ -61,7 +61,7 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OpenAPI specifications.
+        ///   Looks up a localized string similar to OpenAPI.
         /// </summary>
         public static string OpenApiHeader {
             get {
@@ -79,29 +79,11 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} OpenAPI specifications.
+        ///   Looks up a localized string similar to {0} OpenAPI.
         /// </summary>
         public static string OpenApiPageTitle {
             get {
                 return ResourceManager.GetString("OpenApiPageTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close.
-        /// </summary>
-        public static string OpenApiResponseDialogClose {
-            get {
-                return ResourceManager.GetString("OpenApiResponseDialogClose", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response.
-        /// </summary>
-        public static string OpenApiResponseDialogTitle {
-            get {
-                return ResourceManager.GetString("OpenApiResponseDialogTitle", resourceCulture);
             }
         }
         

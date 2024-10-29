@@ -139,12 +139,6 @@
   <data name="OpenApiSelectMethod" xml:space="preserve">
     <value>Select method.</value>
   </data>
-  <data name="OpenApiResponseDialogTitle" xml:space="preserve">
-    <value>Response</value>
-  </data>
-  <data name="OpenApiResponseDialogClose" xml:space="preserve">
-    <value>Close</value>
-  </data>
   <data name="OpenApiSendRequest" xml:space="preserve">
     <value>Send request</value>
   </data>
