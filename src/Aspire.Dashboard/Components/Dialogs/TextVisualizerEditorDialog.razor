@@ -1,0 +1,20 @@
+﻿@using Aspire.Dashboard.Resources
+
+@inject IStringLocalizer<Dialogs> Loc
+
+<FluentDialogHeader ShowDismiss="true">
+    <div class="visualizer-title-grid">
+        <FluentIcon Value="@(new Icons.Regular.Size24.SlideText())" Style="grid-area: dialog-icon; align-self: center;" />
+        <FluentLabel Typo="Typography.PaneHeader" Class="col-long-content" Style="grid-area: dialog-title;">
+            @(EditingText ?? Loc[nameof(Dialogs.TextVisualizerEditorDialogEditingText)])
+        </FluentLabel>
+    </div>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <FluentTextArea Value="@Body">
+
+    </FluentTextArea>
+</FluentDialogBody>
+
+<FluentDialogFooter Visible="false" />
