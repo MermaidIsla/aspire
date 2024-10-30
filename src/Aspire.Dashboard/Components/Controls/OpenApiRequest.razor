@@ -1,0 +1,52 @@
+﻿@using Aspire.Dashboard.Resources
+
+@inject IStringLocalizer<ControlsStrings> ControlsStringsLoc
+
+<div class="openapi-request-layout">
+    <FluentToolbar Orientation="Orientation.Horizontal">
+        <FluentSearch Placeholder="@ControlsStringsLoc[nameof(ControlsStrings.FilterPlaceholder)]"
+                      Immediate="true"
+                      Autofocus="true"
+                      @bind-Value="_filter"
+                      slot="end" />
+    </FluentToolbar>
+    <div class="openapi-request-grid-container">
+        <FluentAccordion>
+            <FluentTextField Style="margin-top: 8px; width: 100%" ReadOnly="true" Value="@_url">
+                <FluentBadge BackgroundColor="@_methodColor" Fill="highlight" slot="start">@_methodName</FluentBadge>
+            </FluentTextField>
+            <FluentAccordionItem Heading="Base Url" Expanded="true" Style="margin-top: 16px">
+                <OpenApiServerSelect
+                    Servers="@Document.Servers"
+                    @bind-SelectedServer="@_selectedServer"
+                    @bind-SelectedServer:after="HandleSelectedServerChangedAsync" />
+            </FluentAccordionItem>
+
+            <FluentAccordionItem Heading="Headers" Expanded="@(_headers.Count() > 0)">
+                <FluentBadge Appearance="Appearance.Neutral" Circular="true" slot="end">
+                    @_headers.Count()
+                </FluentBadge>
+                <PropertyGrid TItem="OpenApiRequestHeader"
+                              Items="@FilteredHeaders"
+                              IsValueSortable="false"
+                              HighlightText="@_filter"
+                              GridTemplateColumns="1fr 1.5fr" />
+            </FluentAccordionItem>
+
+            <FluentAccordionItem Heading="Parameters" Expanded="@(_parameters.Count() > 0)">
+                <FluentBadge Appearance="Appearance.Neutral" Circular="true" slot="end">
+                    @_parameters.Count()
+                </FluentBadge>
+                <PropertyGrid TItem="OpenApiRequestParameter"
+                              Items="@FilteredParameters"
+                              IsValueSortable="false"
+                              HighlightText="@_filter"
+                              GridTemplateColumns="1fr 1.5fr" />
+            </FluentAccordionItem>
+
+            <FluentAccordionItem Heading="Body" Expanded="@(_body.Length > 0)">
+                <TextVisualizer ButtonEditText="Edit body" CanEdit="true" Text="@_body" />
+            </FluentAccordionItem>
+        </FluentAccordion>
+    </div>
+</div>
