@@ -454,6 +454,8 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         _sendingHttpRequest = true;
 
         var method = PageViewModel.SelectedMethod;
+        method.Response = null;
+
         var url = method.Url;
         foreach (var parameter in method.RequestParameters)
         {
