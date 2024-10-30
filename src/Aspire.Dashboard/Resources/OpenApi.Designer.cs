@@ -88,6 +88,24 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit headers.
+        /// </summary>
+        public static string OpenApiRequestButtonEditHeadersText {
+            get {
+                return ResourceManager.GetString("OpenApiRequestButtonEditHeadersText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit parameters.
+        /// </summary>
+        public static string OpenApiRequestButtonEditParametersText {
+            get {
+                return ResourceManager.GetString("OpenApiRequestButtonEditParametersText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select a method.
         /// </summary>
         public static string OpenApiSelectAMethod {

@@ -17,6 +17,16 @@
         <target state="new">{0} OpenAPI</target>
         <note>{0} is an application name</note>
       </trans-unit>
+      <trans-unit id="OpenApiRequestButtonEditHeadersText">
+        <source>Edit headers</source>
+        <target state="new">Edit headers</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiRequestButtonEditParametersText">
+        <source>Edit parameters</source>
+        <target state="new">Edit parameters</target>
+        <note />
+      </trans-unit>
       <trans-unit id="OpenApiSelectAMethod">
         <source>Select a method</source>
         <target state="new">Select a method</target>

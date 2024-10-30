@@ -151,4 +151,10 @@
   <data name="OpenApiServerLabel" xml:space="preserve">
     <value>Server</value>
   </data>
+  <data name="OpenApiRequestButtonEditHeadersText" xml:space="preserve">
+    <value>Edit headers</value>
+  </data>
+  <data name="OpenApiRequestButtonEditParametersText" xml:space="preserve">
+    <value>Edit parameters</value>
+  </data>
 </root>

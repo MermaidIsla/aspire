@@ -18,6 +18,9 @@ public sealed partial class OpenApiRequest : ComponentBase
     [Parameter, EditorRequired]
     public required string Path { get; set; }
 
+    private readonly string _editHeadersButtonId = $"edit-headers-{Guid.NewGuid():N}";
+    private readonly string _editParametersButtonId = $"edit-parameters-{Guid.NewGuid():N}";
+
     private string _body = string.Empty;
     private string _filter = string.Empty;
     private IQueryable<OpenApiRequestHeader> _headers = null!;
@@ -34,6 +37,16 @@ public sealed partial class OpenApiRequest : ComponentBase
     {
         UpdateUrl();
         await InvokeAsync(StateHasChanged);
+    }
+
+    private static Task OnButtonEditHeadersClick()
+    {
+        return Task.CompletedTask;
+    }
+
+    private static Task OnButtonEditParametersClick()
+    {
+        return Task.CompletedTask;
     }
 
     protected override async Task OnInitializedAsync()

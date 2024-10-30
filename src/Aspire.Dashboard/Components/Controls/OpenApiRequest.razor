@@ -1,5 +1,6 @@
 ﻿@using Aspire.Dashboard.Resources
 
+@inject IStringLocalizer<OpenApi> Loc
 @inject IStringLocalizer<ControlsStrings> ControlsStringsLoc
 
 <div class="openapi-request-layout">
@@ -31,6 +32,13 @@
                               IsValueSortable="false"
                               HighlightText="@_filter"
                               GridTemplateColumns="1fr 1.5fr" />
+
+                <FluentButton Id="@_editHeadersButtonId"
+                              IconStart="@(new Icons.Regular.Size16.Edit())"
+                              Style="margin-top: 8px; float: right"
+                              OnClick="OnButtonEditHeadersClick">
+                    @Loc[nameof(OpenApi.OpenApiRequestButtonEditHeadersText)]
+                </FluentButton>
             </FluentAccordionItem>
 
             <FluentAccordionItem Heading="Parameters" Expanded="@(_parameters.Count() > 0)">
@@ -42,6 +50,13 @@
                               IsValueSortable="false"
                               HighlightText="@_filter"
                               GridTemplateColumns="1fr 1.5fr" />
+
+                <FluentButton Id="@_editParametersButtonId"
+                              IconStart="@(new Icons.Regular.Size16.Edit())"
+                              Style="margin-top: 8px; float: right"
+                              OnClick="OnButtonEditParametersClick">
+                    @Loc[nameof(OpenApi.OpenApiRequestButtonEditParametersText)]
+                </FluentButton>
             </FluentAccordionItem>
 
             <FluentAccordionItem Heading="Body" Expanded="@(_body.Length > 0)">
