@@ -157,4 +157,19 @@
   <data name="OpenApiRequestButtonEditParametersText" xml:space="preserve">
     <value>Edit parameters</value>
   </data>
+  <data name="OpenApiRequestBaseUrl" xml:space="preserve">
+    <value>Base Url</value>
+  </data>
+  <data name="OpenApiRequestHeaders" xml:space="preserve">
+    <value>Headers</value>
+  </data>
+  <data name="OpenApiRequestParameters" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="OpenApiRequestBody" xml:space="preserve">
+    <value>Body</value>
+  </data>
+  <data name="OpenApiRequestButtonEditBodyText" xml:space="preserve">
+    <value>Edit body</value>
+  </data>
 </root>

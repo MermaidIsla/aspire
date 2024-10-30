@@ -17,6 +17,21 @@
         <target state="new">{0} OpenAPI</target>
         <note>{0} is an application name</note>
       </trans-unit>
+      <trans-unit id="OpenApiRequestBaseUrl">
+        <source>Base Url</source>
+        <target state="new">Base Url</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiRequestBody">
+        <source>Body</source>
+        <target state="new">Body</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiRequestButtonEditBodyText">
+        <source>Edit body</source>
+        <target state="new">Edit body</target>
+        <note />
+      </trans-unit>
       <trans-unit id="OpenApiRequestButtonEditHeadersText">
         <source>Edit headers</source>
         <target state="new">Edit headers</target>
@@ -25,6 +40,16 @@
       <trans-unit id="OpenApiRequestButtonEditParametersText">
         <source>Edit parameters</source>
         <target state="new">Edit parameters</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiRequestHeaders">
+        <source>Headers</source>
+        <target state="new">Headers</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="OpenApiRequestParameters">
+        <source>Parameters</source>
+        <target state="new">Parameters</target>
         <note />
       </trans-unit>
       <trans-unit id="OpenApiSelectAMethod">

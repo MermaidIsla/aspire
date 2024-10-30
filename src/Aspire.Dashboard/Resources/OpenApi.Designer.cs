@@ -88,6 +88,33 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Base Url.
+        /// </summary>
+        public static string OpenApiRequestBaseUrl {
+            get {
+                return ResourceManager.GetString("OpenApiRequestBaseUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Body.
+        /// </summary>
+        public static string OpenApiRequestBody {
+            get {
+                return ResourceManager.GetString("OpenApiRequestBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit body.
+        /// </summary>
+        public static string OpenApiRequestButtonEditBodyText {
+            get {
+                return ResourceManager.GetString("OpenApiRequestButtonEditBodyText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit headers.
         /// </summary>
         public static string OpenApiRequestButtonEditHeadersText {
@@ -102,6 +129,24 @@ namespace Aspire.Dashboard.Resources {
         public static string OpenApiRequestButtonEditParametersText {
             get {
                 return ResourceManager.GetString("OpenApiRequestButtonEditParametersText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Headers.
+        /// </summary>
+        public static string OpenApiRequestHeaders {
+            get {
+                return ResourceManager.GetString("OpenApiRequestHeaders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameters.
+        /// </summary>
+        public static string OpenApiRequestParameters {
+            get {
+                return ResourceManager.GetString("OpenApiRequestParameters", resourceCulture);
             }
         }
         

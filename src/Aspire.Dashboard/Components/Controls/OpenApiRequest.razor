@@ -16,14 +16,14 @@
             <FluentTextField Style="margin-top: 8px; width: 100%" ReadOnly="true" Value="@_url">
                 <FluentBadge BackgroundColor="@_methodColor" Fill="highlight" slot="start">@_methodName</FluentBadge>
             </FluentTextField>
-            <FluentAccordionItem Heading="Base Url" Expanded="@(Document.Servers.Count > 1 || Document.Servers.First().Variables.Count > 0)" Style="margin-top: 16px">
+            <FluentAccordionItem Heading="@Loc[nameof(OpenApi.OpenApiRequestBaseUrl)]" Expanded="@(Document.Servers.Count > 1 || Document.Servers.First().Variables.Count > 0)" Style="margin-top: 16px">
                 <OpenApiServerSelect
                     Servers="@Document.Servers"
                     @bind-SelectedServer="@_selectedServer"
                     @bind-SelectedServer:after="HandleSelectedServerChangedAsync" />
             </FluentAccordionItem>
 
-            <FluentAccordionItem Heading="Headers" Expanded="@(_headers.Count() > 0)">
+            <FluentAccordionItem Heading="@Loc[nameof(OpenApi.OpenApiRequestHeaders)]" Expanded="@(_headers.Count() > 0)">
                 <FluentBadge Appearance="Appearance.Neutral" Circular="true" slot="end">
                     @_headers.Count()
                 </FluentBadge>
@@ -41,7 +41,7 @@
                 </FluentButton>
             </FluentAccordionItem>
 
-            <FluentAccordionItem Heading="Parameters" Expanded="@(_parameters.Count() > 0)">
+            <FluentAccordionItem Heading="@Loc[nameof(OpenApi.OpenApiRequestParameters)]" Expanded="@(_parameters.Count() > 0)">
                 <FluentBadge Appearance="Appearance.Neutral" Circular="true" slot="end">
                     @_parameters.Count()
                 </FluentBadge>
@@ -59,8 +59,8 @@
                 </FluentButton>
             </FluentAccordionItem>
 
-            <FluentAccordionItem Heading="Body" Expanded="@(_body.Length > 0)">
-                <TextVisualizer ButtonEditText="Edit body" CanEdit="true" Text="@_body" />
+            <FluentAccordionItem Heading="@Loc[nameof(OpenApi.OpenApiRequestBody)]" Expanded="@(_body.Length > 0)">
+                <TextVisualizer ButtonEditText="@Loc[nameof(OpenApi.OpenApiRequestButtonEditBodyText)]" CanEdit="true" Text="@_body" />
             </FluentAccordionItem>
         </FluentAccordion>
     </div>
