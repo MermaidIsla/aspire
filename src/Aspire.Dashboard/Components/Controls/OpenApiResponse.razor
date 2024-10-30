@@ -12,7 +12,7 @@
     </FluentToolbar>
     <div class="openapi-response-grid-container">
         <FluentAccordion>
-            <FluentAccordionItem Heading="Headers" Expanded="true">
+            <FluentAccordionItem Heading="Headers" Expanded="@(_headers.Count() > 0)">
                 <FluentBadge Appearance="Appearance.Neutral" Circular="true" slot="end">
                     @_headers.Count()
                 </FluentBadge>
@@ -23,7 +23,7 @@
                               GridTemplateColumns="1fr 1.5fr" />
             </FluentAccordionItem>
 
-            <FluentAccordionItem Heading="Body" Expanded="true">
+            <FluentAccordionItem Heading="Body" Expanded="@(_body.Length > 0)">
                 <TextVisualizer Text="@_body" />
             </FluentAccordionItem>
         </FluentAccordion>
