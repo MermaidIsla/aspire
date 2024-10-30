@@ -87,7 +87,6 @@
                         </Panel1>
                         <Panel2>
                             <SummaryDetailsView
-                                DetailsTitle="API Response"
                                 ShowDetails="@(PageViewModel.SelectedMethod?.Response is not null)"
                                 OnDismiss="@(() => ClearMethodResponse())"
                                 SelectedValue="@PageViewModel.SelectedMethod?.Response"
@@ -130,6 +129,10 @@
                                 <Details>
                                     <OpenApiResponse Response="@context" />
                                 </Details>
+                                <DetailsTitleTemplate>
+                                    API Response
+                                    <FluentBadge BackgroundColor="@(context!.IsSuccessStatusCode ? "green" : "red")" Fill="highlight" slot="end">@((int)context.StatusCode) @context.StatusCode</FluentBadge>
+                                </DetailsTitleTemplate>
                             </SummaryDetailsView>
                         </Panel2>
                     </FluentSplitter>
