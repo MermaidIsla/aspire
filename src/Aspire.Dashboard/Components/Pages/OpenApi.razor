@@ -94,97 +94,38 @@
                                 ViewKey="OpenApiResponse">
                                 
                                 <Summary>
-                                    <div class="method-content">
-                                        @if (PageViewModel.SelectedMethod == null)
+                                    @if (PageViewModel.SelectedMethod == null)
+                                    {
+                                        @if (ViewportInformation.IsDesktop)
                                         {
-                                            @if (ViewportInformation.IsDesktop)
-                                            {
-                                                <p>@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectMethod)]</p>
-                                            }
-                                            else
-                                            {
-                                                <div class="empty-content">
-                                                    <FluentAnchor Href="#" Appearance="Appearance.Hypertext" OnClick="@(async () => await _contentLayout!.OpenMobileToolbarAsync())">
-                                                        @Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectMethod)]
-                                                    </FluentAnchor>
-                                                </div>
-                                            }
+                                            <p>@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectMethod)]</p>
                                         }
                                         else
                                         {
-                                            <h3>Request:</h3>
-                                            <FluentGrid>
-                                                @if (ViewportInformation.IsDesktop)
-                                                {
-                                                    <FluentGridItem sm="9" xl="10" xxl="11">
-                                                        <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url">
-                                                            <FluentBadge BackgroundColor="@PageViewModel.SelectedMethod.BadgeColor" Fill="highlight" slot="start">@PageViewModel.SelectedMethod.Method.ToString()</FluentBadge>
-                                                        </FluentTextField>
-                                                    </FluentGridItem>
-                                                    <FluentGridItem sm="3" xl="2" xxl="1">
-                                                        <FluentButton Appearance="Appearance.Outline" IconStart="@s_playIcon" Loading="_sendingHttpRequest" Style="width: 100%" OnClick="@SendRequest">
-                                                            @Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSendRequest)]
-                                                        </FluentButton>
-                                                    </FluentGridItem>
-                                                }
-                                                else
-                                                {
-                                                    <FluentGridItem xs="12">
-                                                        <FluentTextField Style="width: 100%" ReadOnly="true" Value="@PageViewModel.SelectedMethod.Url">
-                                                            <FluentBadge BackgroundColor="@PageViewModel.SelectedMethod.BadgeColor" Fill="highlight" slot="start">@PageViewModel.SelectedMethod.Method.ToString()</FluentBadge>
-                                                        </FluentTextField>
-                                                    </FluentGridItem>
-                                                    <FluentGridItem xs="12">
-                                                        <FluentButton Appearance="Appearance.Outline" IconStart="@s_playIcon" Loading="_sendingHttpRequest" Style="width: 100%" OnClick="@SendRequest">
-                                                            @Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSendRequest)]
-                                                        </FluentButton>
-                                                    </FluentGridItem>
-                                                }
-                                            </FluentGrid>
-                                            @if (PageViewModel.SelectedMethod.RequestParameters.Count > 0)
-                                            {
-                                                <h5 style="margin-top: 16px">Parameters:</h5>
-                                                <FluentGrid>
-                                                    @if (ViewportInformation.IsDesktop)
-                                                    {
-                                                        @foreach (var parameter in PageViewModel.SelectedMethod.RequestParameters)
-                                                        {
-                                                            <FluentGridItem sm="4" md="3" xl="2" xxl="1">
-                                                                <span>@parameter.Name</span>
-                                                                @if (parameter.IsRequired)
-                                                                {
-                                                                    <span style="color: lightcoral"> *</span>
-                                                                }
-                                                            </FluentGridItem>
-                                                            <FluentGridItem sm="8" md="9" xl="10" xxl="11">
-                                                                <FluentTextField Placeholder="@parameter.Type" Style="width: 100%" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })">
-                                                                    <FluentBadge BackgroundColor="@ParameterTypeColor" Fill="highlight" slot="end">@parameter.Type</FluentBadge>
-                                                                </FluentTextField>
-                                                            </FluentGridItem>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        @foreach (var parameter in PageViewModel.SelectedMethod.RequestParameters)
-                                                        {
-                                                            <FluentGridItem xs="12" sm="12">
-                                                                <span>@parameter.Name</span>
-                                                                @if (parameter.IsRequired)
-                                                                {
-                                                                    <span style="color: lightcoral"> *</span>
-                                                                }
-                                                            </FluentGridItem>
-                                                            <FluentGridItem xs="12" sm="12">
-                                                                <FluentTextField Placeholder="@parameter.Type" Style="width: 100%" Value="@parameter.Value" ValueChanged="@((value) => { parameter.Value = value; })">
-                                                                    <FluentBadge BackgroundColor="@ParameterTypeColor" Fill="highlight" slot="end">@parameter.Type</FluentBadge>
-                                                                </FluentTextField>
-                                                            </FluentGridItem>
-                                                        }
-                                                    }
-                                                </FluentGrid>
-                                            }
+                                            <div class="empty-content">
+                                                <FluentAnchor Href="#" Appearance="Appearance.Hypertext" OnClick="@(async () => await _contentLayout!.OpenMobileToolbarAsync())">
+                                                    @Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSelectMethod)]
+                                                </FluentAnchor>
+                                            </div>
                                         }
-                                    </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="details-container">
+                                            <header style="height: auto;">
+                                                <div class="details-header-title" title="API Request">API Request</div>
+                                                <div class="header-actions">
+                                                    <FluentButton Appearance="Appearance.Stealth" BackgroundColor="@(ViewportInformation.IsDesktop ? null : "rgba(0, 0, 0, 0)")" IconEnd="@(new Icons.Regular.Size16.Play())"
+                                                                  OnClick="SendRequest" Title="@Loc[nameof(ControlsStrings.SummaryDetailsViewCloseView)]" aria-label="@Loc[nameof(ControlsStrings.SummaryDetailsViewCloseView)]" />
+                                                </div>
+                                            </header>
+                                            <OpenApiRequest
+                                                @ref="_request"
+                                                Document="@PageViewModel.Document"
+                                                Method="@PageViewModel.SelectedMethod.Method"
+                                                Path="@PageViewModel.SelectedMethod.Name" />
+                                        </div>
+                                    }
                                 </Summary>
                                 <Details>
                                     <OpenApiResponse Response="@context" />

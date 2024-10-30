@@ -53,8 +53,8 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     [Parameter]
     public string? ResourceName { get; set; }
 
-    private bool _sendingHttpRequest;
     private OpenApiSubscription? _openApiSubscription;
+    private OpenApiRequest? _request;
     private ImmutableList<SelectViewModel<ResourceTypeDetails>>? _resources;
     private readonly ConcurrentDictionary<string, ResourceViewModel> _resourceByName = new(StringComparers.ResourceName);
     private readonly CancellationTokenSource _resourceSubscriptionCts = new();
@@ -68,17 +68,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
 
     // State
     public OpenApiViewModel PageViewModel { get; set; } = null!;
-
-    // Icons
-    private static readonly Icon s_playIcon = new Icons.Filled.Size16.Play();
-
-    // Colors
-    private const string HttpMethodDefaultColor = "gray";
-    private const string HttpMethodDeleteColor = "red";
-    private const string HttpMethodGetColor = "cornflowerblue";
-    private const string HttpMethodPostColor = "green";
-    private const string HttpMethodPutColor = "darkorange";
-    private const string ParameterTypeColor = "gray";
 
     public string BasePath => DashboardUrls.OpenApiBasePath;
     public string SessionStorageKey => BrowserStorageKeys.OpenApiPageState;
@@ -132,8 +121,14 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             PageViewModel.SelectedMethod = null;
         }
 
-        await this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: true);
         await InvokeAsync(StateHasChanged);
+
+        if (_request is not null)
+        {
+            await _request.UpdateRequest();
+        }
+
+        await this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: true);
     }
 
     private async Task LoadOpenAPISpecification()
@@ -379,28 +374,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
                 }
 
                 var method = HttpMethod.Parse(operation.Key.ToString());
-                var color = string.Empty;
-
-                if (method == HttpMethod.Delete)
-                {
-                    color = HttpMethodDeleteColor;
-                }
-                else if(method == HttpMethod.Get)
-                {
-                    color = HttpMethodGetColor;
-                }
-                else if (method == HttpMethod.Post)
-                {
-                    color = HttpMethodPostColor;
-                }
-                else if (method == HttpMethod.Put)
-                {
-                    color = HttpMethodPutColor;
-                }
-                else
-                {
-                    color = HttpMethodDefaultColor;
-                }
+                var color = OpenApiUtils.GetBadgeColorFromHttpMethod(method);
 
                 foreach (var tag in operation.Value.Tags)
                 {
@@ -452,8 +426,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             return;
         }
 
-        _sendingHttpRequest = true;
-
         var method = PageViewModel.SelectedMethod;
         method.Response = null;
 
@@ -490,7 +462,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             Method = method.Method,
             RequestUri = new Uri(url)
         });
-        _sendingHttpRequest = false;
     }
 
     private async Task StopAndClearOpenApiSubscriptionAsync()
