@@ -1,0 +1,21 @@
+﻿@using Aspire.Dashboard.Resources
+
+@inject IStringLocalizer<OpenApi> Loc
+
+<FluentInputLabel Label="@Loc[nameof(OpenApi.OpenApiServerLabel)]"
+                  ForId="@_selectId"
+                  Orientation="Orientation.Horizontal" />
+
+<FluentSelect Items="Servers"
+              Id="@_selectId"
+              OptionValue="@((context) => context.Url)"
+              @bind-SelectedOption="SelectedServer"
+              @bind-SelectedOption:after="SelectedServerChangedCore"
+              ValueChanged="ValuedChanged"
+              AriaLabel="@Loc[nameof(OpenApi.OpenApiServerLabel)]"
+              Class="server-list"
+              Height="@GetPopupHeight()">
+    <OptionTemplate>
+        @context.Url
+    </OptionTemplate>
+</FluentSelect>
