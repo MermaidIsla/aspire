@@ -87,6 +87,7 @@
                         </Panel1>
                         <Panel2>
                             <SummaryDetailsView
+                                @ref="_summaryDetailsView"
                                 ShowDetails="@(PageViewModel.SelectedMethod?.Response is not null)"
                                 OnDismiss="@(() => ClearMethodResponse())"
                                 SelectedValue="@PageViewModel.SelectedMethod?.Response"
@@ -127,7 +128,9 @@
                                     }
                                 </Summary>
                                 <Details>
-                                    <OpenApiResponse Response="@context" />
+                                    <OpenApiResponse
+                                        @ref="_response"
+                                        Response="@context" />
                                 </Details>
                                 <DetailsTitleTemplate>
                                     API Response

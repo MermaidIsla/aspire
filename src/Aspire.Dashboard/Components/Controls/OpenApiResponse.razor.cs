@@ -18,12 +18,19 @@ public sealed partial class OpenApiResponse : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        await UpdateResponse();
+    }
+
+    public async Task UpdateResponse()
+    {
         _body = await Response.Content.ReadAsStringAsync();
         _headers = Response.Content.Headers.AsQueryable().Select(x => new OpenApiResponseHeader
         {
             Name = x.Key,
             Value = x.Value.FirstOrDefault() ?? string.Empty
         });
+
+        await InvokeAsync(StateHasChanged);
     }
 
     public class OpenApiResponseHeader : IPropertyGridItem

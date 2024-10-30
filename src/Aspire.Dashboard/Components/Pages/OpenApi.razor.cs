@@ -55,11 +55,13 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
 
     private OpenApiSubscription? _openApiSubscription;
     private OpenApiRequest? _request;
+    private Controls.OpenApiResponse? _response;
     private ImmutableList<SelectViewModel<ResourceTypeDetails>>? _resources;
     private readonly ConcurrentDictionary<string, ResourceViewModel> _resourceByName = new(StringComparers.ResourceName);
     private readonly CancellationTokenSource _resourceSubscriptionCts = new();
     private Task? _resourceSubscriptionTask;
     private CancellationToken _resourceSubscriptionToken;
+    private SummaryDetailsView<HttpResponseMessage>? _summaryDetailsView;
     private TreeOpenApiMethodSelector? _treeOpenApiMethodSelector;
 
     // UI
@@ -462,6 +464,11 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             Method = method.Method,
             RequestUri = new Uri(url)
         });
+
+        if (_response is not null)
+        {
+            await _response.UpdateResponse();
+        }
     }
 
     private async Task StopAndClearOpenApiSubscriptionAsync()
