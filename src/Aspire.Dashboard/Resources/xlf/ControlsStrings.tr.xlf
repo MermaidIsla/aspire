@@ -432,6 +432,16 @@
         <target state="translated">Zaman damgası &lt;strong&gt;{0}&lt;/strong&gt;</target>
         <note>{0} is a date. This is raw markup, so &lt;strong&gt; and &lt;/strong&gt; should not be modified</note>
       </trans-unit>
+      <trans-unit id="TextVisualiserCopyToClipboard">
+        <source>Copy to clipboard</source>
+        <target state="new">Copy to clipboard</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="TextVisualiserEdit">
+        <source>Edit</source>
+        <target state="new">Edit</target>
+        <note />
+      </trans-unit>
       <trans-unit id="TimeOffsetColumnHeader">
         <source>Time offset</source>
         <target state="translated">Zaman farkı</target>

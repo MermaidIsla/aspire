@@ -133,6 +133,15 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Server.
+        /// </summary>
+        public static string OpenApiServerLabel {
+            get {
+                return ResourceManager.GetString("OpenApiServerLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown state.
         /// </summary>
         public static string OpenApiUnknownState {

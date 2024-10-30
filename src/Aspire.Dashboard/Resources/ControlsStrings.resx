@@ -413,4 +413,10 @@
   <data name="ActionStructuredLogsText" xml:space="preserve">
     <value>Structured logs</value>
   </data>
+  <data name="TextVisualiserCopyToClipboard" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="TextVisualiserEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
 </root>

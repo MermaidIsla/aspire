@@ -862,6 +862,24 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string TextVisualiserCopyToClipboard {
+            get {
+                return ResourceManager.GetString("TextVisualiserCopyToClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string TextVisualiserEdit {
+            get {
+                return ResourceManager.GetString("TextVisualiserEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Time offset.
         /// </summary>
         public static string TimeOffsetColumnHeader {
