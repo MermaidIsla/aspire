@@ -13,6 +13,7 @@ using Aspire.Dashboard.Otlp.Model;
 using Aspire.Dashboard.Resources;
 using Aspire.Dashboard.Utils;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Localization;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.OpenApi.Models;
@@ -476,14 +477,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             }
             else if (parameter.IsInQuery)
             {
-                if (url.Contains('?'))
-                {
-                    url += $"{parameter.Name}={Uri.EscapeDataString(parameter.Value)}";
-                }
-                else
-                {
-                    url += $"?{parameter.Name}={Uri.EscapeDataString(parameter.Value)}";
-                }
+                url = QueryHelpers.AddQueryString(url, parameter.Name, Uri.EscapeDataString(parameter.Value));
             }
             else
             {
@@ -496,7 +490,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             Method = method.Method,
             RequestUri = new Uri(url)
         });
-
         _sendingHttpRequest = false;
     }
 
