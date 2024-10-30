@@ -19,10 +19,17 @@ public sealed partial class TextVisualizer : ComponentBase, IAsyncDisposable
     [Inject]
     public required ThemeManager ThemeManager { get; init; }
 
+    [Parameter]
+    public string? ButtonEditText { get; set; }
+
+    [Parameter]
+    public bool CanEdit { get; set; }
+
     [Parameter, EditorRequired]
     public required string Text { get; set; }
 
     private readonly string _copyButtonId = $"copy-{Guid.NewGuid():N}";
+    private readonly string _editButtonId = $"edit-{Guid.NewGuid():N}";
     private readonly string _logContainerId = $"log-container-{Guid.NewGuid():N}";
 
     // xml and json are language names supported by highlight.js

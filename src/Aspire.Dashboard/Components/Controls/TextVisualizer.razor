@@ -1,6 +1,6 @@
 ﻿@using Aspire.Dashboard.Resources
 
-@inject IStringLocalizer<Dialogs> Loc
+@inject IStringLocalizer<OpenApi> Loc
 @inject IStringLocalizer<ControlsStrings> ControlsStringsLoc
 
 <div class="log-overflow" style="min-height: 80px; max-height: 40vh; margin-bottom: 16px;">
@@ -30,12 +30,23 @@
         </Virtualize>
     </div>
 </div>
-<FluentButton Id="@_copyButtonId"
-              Style="float: right"
-              AdditionalAttributes="@FluentUIExtensions.GetClipboardCopyAdditionalAttributes(FormattedText, ControlsStringsLoc[nameof(ControlsStrings.GridValueCopyToClipboard)], ControlsStringsLoc[nameof(ControlsStrings.GridValueCopied)])">
-    <span slot="start">
-        <FluentIcon Class="copy-icon" Style="display:inline; vertical-align: text-bottom" Icon="Icons.Regular.Size16.Copy" Slot="start" />
-        <FluentIcon Class="checkmark-icon" Style="display:none; vertical-align: text-bottom" Icon="Icons.Regular.Size16.Checkmark" Slot="start" />
-    </span>
-    @ControlsStringsLoc[nameof(ControlsStrings.GridValueCopyToClipboard)]
-</FluentButton>
+<div style="float: right">
+    <FluentStack HorizontalGap="8" Orientation="Orientation.Horizontal">
+        @if (CanEdit)
+        {
+            <FluentButton Id="@_editButtonId"
+                          IconStart="@(new Icons.Regular.Size16.Edit())">
+                @(ButtonEditText ?? ControlsStringsLoc[nameof(ControlsStrings.TextVisualiserEdit)])
+            </FluentButton>
+        }
+        <FluentButton Id="@_copyButtonId"
+                      Style="float: right"
+                      AdditionalAttributes="@FluentUIExtensions.GetClipboardCopyAdditionalAttributes(FormattedText, ControlsStringsLoc[nameof(ControlsStrings.GridValueCopyToClipboard)], ControlsStringsLoc[nameof(ControlsStrings.GridValueCopied)])">
+            <span slot="start">
+                <FluentIcon Class="copy-icon" Style="display:inline; vertical-align: text-bottom" Icon="Icons.Regular.Size16.Copy" Slot="start" />
+                <FluentIcon Class="checkmark-icon" Style="display:none; vertical-align: text-bottom" Icon="Icons.Regular.Size16.Checkmark" Slot="start" />
+            </span>
+            @ControlsStringsLoc[nameof(ControlsStrings.TextVisualiserCopyToClipboard)]
+        </FluentButton>
+    </FluentStack>
+</div>
