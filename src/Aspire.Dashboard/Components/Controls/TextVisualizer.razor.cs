@@ -8,11 +8,19 @@ using Aspire.Dashboard.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Text;
+using Aspire.Dashboard.Components.Dialogs;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Aspire.Dashboard.Components.Controls;
 
 public sealed partial class TextVisualizer : ComponentBase, IAsyncDisposable
 {
+    [CascadingParameter]
+    public required ViewportInformation ViewportInformation { get; init; }
+
+    [Inject]
+    public required IDialogService DialogService { get; init; }
+
     [Inject]
     public required IJSRuntime JS { get; init; }
 
@@ -109,21 +117,21 @@ public sealed partial class TextVisualizer : ComponentBase, IAsyncDisposable
         }
     }
 
+    private async Task OnButtonEditClick()
+    {
+        await TextVisualizerEditorDialog.OpenDialogAsync(ViewportInformation, DialogService, Text, ButtonEditText, async (result) =>
+        {
+            Text = result;
+            UpdateVisualizer();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await ThemeManager.EnsureInitializedAsync();
 
-        if (TryFormatJson())
-        {
-            return;
-        }
-
-        if (TryFormatXml())
-        {
-            return;
-        }
-
-        ChangeFormattedText(PlaintextFormat, Text);
+        UpdateVisualizer();
     }
 
     private bool TryFormatJson()
@@ -154,6 +162,21 @@ public sealed partial class TextVisualizer : ComponentBase, IAsyncDisposable
         {
             return false;
         }
+    }
+
+    private void UpdateVisualizer()
+    {
+        if (TryFormatJson())
+        {
+            return;
+        }
+
+        if (TryFormatXml())
+        {
+            return;
+        }
+
+        ChangeFormattedText(PlaintextFormat, Text);
     }
 
     public record StringLogLine(int LineNumber, string Content, bool IsFormatted);

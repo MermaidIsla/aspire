@@ -212,6 +212,11 @@
         <target state="translated">格式化 XML</target>
         <note />
       </trans-unit>
+      <trans-unit id="TextVisualizerEditorDialogEditingText">
+        <source>Editing</source>
+        <target state="new">Editing</target>
+        <note />
+      </trans-unit>
       <trans-unit id="TextVisualizerSelectFormatType">
         <source>Select format</source>
         <target state="translated">選取格式</target>

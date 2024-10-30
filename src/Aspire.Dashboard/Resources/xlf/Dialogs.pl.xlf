@@ -212,6 +212,11 @@
         <target state="translated">Formatuj kod XML</target>
         <note />
       </trans-unit>
+      <trans-unit id="TextVisualizerEditorDialogEditingText">
+        <source>Editing</source>
+        <target state="new">Editing</target>
+        <note />
+      </trans-unit>
       <trans-unit id="TextVisualizerSelectFormatType">
         <source>Select format</source>
         <target state="translated">Wybierz format</target>

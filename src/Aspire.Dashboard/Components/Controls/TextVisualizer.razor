@@ -35,7 +35,8 @@
         @if (CanEdit)
         {
             <FluentButton Id="@_editButtonId"
-                          IconStart="@(new Icons.Regular.Size16.Edit())">
+                          IconStart="@(new Icons.Regular.Size16.Edit())"
+                          OnClick="OnButtonEditClick">
                 @(ButtonEditText ?? ControlsStringsLoc[nameof(ControlsStrings.TextVisualiserEdit)])
             </FluentButton>
         }
