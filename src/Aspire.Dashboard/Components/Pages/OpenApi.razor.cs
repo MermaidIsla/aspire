@@ -13,7 +13,6 @@ using Aspire.Dashboard.Otlp.Model;
 using Aspire.Dashboard.Resources;
 using Aspire.Dashboard.Utils;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Localization;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.OpenApi.Models;
@@ -45,6 +44,9 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     public required ILogger<OpenApi> Logger { get; init; }
 
     [Inject]
+    public required IMessageService MessageService { get; init; }
+
+    [Inject]
     public required NavigationManager NavigationManager { get; init; }
 
     [Inject]
@@ -53,8 +55,10 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     [Parameter]
     public string? ResourceName { get; set; }
 
+    private const string MessagesTop = "MessagesTop";
+
     private OpenApiSubscription? _openApiSubscription;
-    private OpenApiRequest? _request;
+    private OpenApiRequest _request = null!;
     private Controls.OpenApiResponse? _response;
     private ImmutableList<SelectViewModel<ResourceTypeDetails>>? _resources;
     private readonly ConcurrentDictionary<string, ResourceViewModel> _resourceByName = new(StringComparers.ResourceName);
@@ -431,39 +435,13 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         var method = PageViewModel.SelectedMethod;
         method.Response = null;
 
-        var url = method.Url;
-        foreach (var parameter in method.RequestParameters)
+        if (!_request.ValidateUserInput(out var error))
         {
-            if (string.IsNullOrEmpty(parameter.Value))
-            {
-                if (parameter.IsInPath)
-                {
-                    Logger.LogError("Cannot send request! Parameter {Name} is required!", parameter.Name);
-                    return;
-                }
-
-                continue;
-            }
-
-            if (parameter.IsInPath)
-            {
-                url = url.Replace($"{{{parameter.Name}}}", Uri.EscapeDataString(parameter.Value));
-            }
-            else if (parameter.IsInQuery)
-            {
-                url = QueryHelpers.AddQueryString(url, parameter.Name, Uri.EscapeDataString(parameter.Value));
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            await MessageService.ShowMessageBarAsync(error, MessageIntent.Error, MessagesTop);
+            return;
         }
 
-        method.Response = await HttpClient.SendAsync(new HttpRequestMessage
-        {
-            Method = method.Method,
-            RequestUri = new Uri(url)
-        });
+        method.Response = await HttpClient.SendAsync(_request.CreateHttpRequest());
 
         if (_response is not null)
         {
