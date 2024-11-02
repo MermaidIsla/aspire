@@ -1,0 +1,30 @@
+﻿@using Aspire.Dashboard.Components.Controls.Grid
+@using Aspire.Dashboard.Resources
+
+@inject IStringLocalizer<ControlsStrings> ControlsStringsLoc
+@inject IStringLocalizer<Dialogs> Loc
+
+@typeparam TItem where TItem : IPropertyGridExtendedItem
+
+@implements IDialogContentComponent<PropertyGridEditorDialog<TItem>.PropertyGridEditorDialogViewModel>
+
+<FluentDialogHeader ShowDismiss="true">
+    <div class="visualizer-title-grid">
+        <FluentIcon Value="@(new Icons.Regular.Size24.SlideText())" Style="grid-area: dialog-icon; align-self: center;" />
+        <FluentLabel Typo="Typography.PaneHeader" Class="col-long-content" Style="grid-area: dialog-title;">
+            @(Content.EditingText ?? Loc[nameof(Dialogs.PropertyGridEditorDialogEditingText)])
+        </FluentLabel>
+    </div>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+    <PropertyGridExtended
+        EnableEditing="true"
+        GridTemplateColumns="1fr 1.5fr"
+        IsValueSortable="false"
+        Items="@Content.Properties"
+        TItem="TItem"
+        ValueChanged="@OnValueChanged" />
+</FluentDialogBody>
+
+<FluentDialogFooter Visible="false" />
