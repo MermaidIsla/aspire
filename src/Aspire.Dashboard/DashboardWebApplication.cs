@@ -273,6 +273,7 @@ public sealed class DashboardWebApplication : IAsyncDisposable
 
         // OpenAPI
         builder.Services.AddHttpClient();
+        builder.Services.AddSingleton<OpenApiRepository>();
 
         _app = builder.Build();
 

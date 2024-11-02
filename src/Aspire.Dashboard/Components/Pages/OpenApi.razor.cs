@@ -15,8 +15,6 @@ using Aspire.Dashboard.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Microsoft.OpenApi.Models;
-using Microsoft.OpenApi.Readers;
 
 namespace Aspire.Dashboard.Components.Pages;
 
@@ -50,6 +48,9 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     public required NavigationManager NavigationManager { get; init; }
 
     [Inject]
+    public required OpenApiRepository OpenApiRepository { get; init; }
+
+    [Inject]
     public required ISessionStorage SessionStorage { get; init; }
 
     [Parameter]
@@ -59,13 +60,13 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
 
     private OpenApiSubscription? _openApiSubscription;
     private OpenApiRequest _request = null!;
-    private Controls.OpenApiResponse? _response;
+    private OpenApiResponse? _response;
     private ImmutableList<SelectViewModel<ResourceTypeDetails>>? _resources;
     private readonly ConcurrentDictionary<string, ResourceViewModel> _resourceByName = new(StringComparers.ResourceName);
     private readonly CancellationTokenSource _resourceSubscriptionCts = new();
     private Task? _resourceSubscriptionTask;
     private CancellationToken _resourceSubscriptionToken;
-    private SummaryDetailsView<HttpResponseMessage>? _summaryDetailsView;
+    private SummaryDetailsView<HttpResponseMessage?>? _summaryDetailsView;
     private TreeOpenApiMethodSelector? _treeOpenApiMethodSelector;
 
     // UI
@@ -80,12 +81,12 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
 
     private void ClearMethodResponse()
     {
-        if (PageViewModel.SelectedMethod is null)
+        if (PageViewModel.Response is null)
         {
             return;
         }
 
-        PageViewModel.SelectedMethod.Response = null;
+        PageViewModel.Response = null;
     }
 
     public OpenApiPageState ConvertViewModelToSerializable()
@@ -118,7 +119,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
 
     private async Task HandleSelectedTreeItemChangedAsync()
     {
-        if (PageViewModel.SelectedTreeItem?.Data is OpenApiViewModelMethod method)
+        if (_treeOpenApiMethodSelector!.SelectedTreeItem?.Data is OpenApiMethod method)
         {
             PageViewModel.SelectedMethod = method;
         }
@@ -137,43 +138,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         await this.AfterViewModelChangedAsync(_contentLayout, waitToApplyMobileChange: true);
     }
 
-    private async Task LoadOpenAPISpecification()
-    {
-        if (PageViewModel.SelectedResource == null)
-        {
-            return;
-        }
-
-        foreach (var url in PageViewModel.SelectedResource.Urls)
-        {
-            if (url.IsInternal)
-            {
-                continue;
-            }
-
-            var baseUrl = url.Url.Scheme + "://" + url.Url.Host + ":" + url.Url.Port;
-
-            var response = await HttpClient.SendAsync(new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(baseUrl + "/openapi/v1.json")
-            });
-
-            if (!response.IsSuccessStatusCode)
-            {
-                Logger.LogError("Error while trying to get OpenAPI specification!");
-                return;
-            }
-
-            var reader = new OpenApiStringReader();
-            PageViewModel.Document = reader.Read(await response.Content.ReadAsStringAsync(), out _);
-            ParseOpenApiDocument(baseUrl);
-
-            await InvokeAsync(StateHasChanged);
-            break;
-        }
-    }
-
     protected override async Task OnInitializedAsync()
     {
         _resourceSubscriptionToken = _resourceSubscriptionCts.Token;
@@ -184,8 +148,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         };
         PageViewModel = new OpenApiViewModel
         {
-            Document = null,
-            Methods = null,
+            Model = null,
             SelectedOption = _noSelection,
             SelectedResource = null
         };
@@ -320,7 +283,12 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             }
 
             // OpenAPI
-            await LoadOpenAPISpecification();
+            if (PageViewModel.SelectedResource is null)
+            {
+                return;
+            }
+
+            PageViewModel.Model = await OpenApiRepository.GetModelFromResourceAsync(PageViewModel.SelectedResource);
         }
     }
 
@@ -352,72 +320,6 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
         }
     }
 
-    private void ParseOpenApiDocument(string baseUrl)
-    {
-        if (PageViewModel.Document == null)
-        {
-            return;
-        }
-
-        PageViewModel.Methods = new Dictionary<string, List<OpenApiViewModelMethod>>();
-
-        foreach (var path in PageViewModel.Document.Paths)
-        {
-            foreach (var operation in path.Value.Operations)
-            {
-                List<OpenApiViewModelParameter> parameters = new List<OpenApiViewModelParameter>();
-
-                foreach (var parameter in operation.Value.Parameters)
-                {
-                    parameters.Add(new OpenApiViewModelParameter
-                    {
-                        IsInPath = parameter.In == ParameterLocation.Path,
-                        IsInQuery = parameter.In == ParameterLocation.Query,
-                        IsRequired = parameter.Required,
-                        Name = parameter.Name,
-                        Type = string.IsNullOrEmpty(parameter.Schema.Format) ? parameter.Schema.Type : parameter.Schema.Format
-                    });
-                }
-
-                var method = HttpMethod.Parse(operation.Key.ToString());
-                var color = OpenApiUtils.GetBadgeColorFromHttpMethod(method);
-
-                foreach (var tag in operation.Value.Tags)
-                {
-                    if (PageViewModel.Methods.TryGetValue(tag.Name, out var methods))
-                    {
-                        methods.Add(new OpenApiViewModelMethod
-                        {
-                            BadgeColor = color,
-                            Description = path.Value.Description,
-                            Id = $"{path.Key}-{operation.Key}".ToLower(),
-                            Method = method,
-                            Name = path.Key,
-                            RequestParameters = parameters,
-                            Url = baseUrl + path.Key
-                        });
-                    }
-                    else
-                    {
-                        PageViewModel.Methods[tag.Name] = new List<OpenApiViewModelMethod>
-                        {
-                            new OpenApiViewModelMethod
-                            {
-                                BadgeColor = color,
-                                Description = path.Value.Description,
-                                Id = $"{path.Key}-{operation.Key}".ToLower(),
-                                Method = method,
-                                Name = path.Key,
-                                RequestParameters = parameters,
-                                Url = baseUrl + path.Key
-                            }
-                        };
-                    }
-                }
-            }
-        }
-    }
-
     private async Task SendRequest()
     {
         if (PageViewModel.SelectedResource == null)
@@ -432,8 +334,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             return;
         }
 
-        var method = PageViewModel.SelectedMethod;
-        method.Response = null;
+        PageViewModel.Response = null;
 
         if (!_request.ValidateUserInput(out var error))
         {
@@ -441,7 +342,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             return;
         }
 
-        method.Response = await HttpClient.SendAsync(_request.CreateHttpRequest());
+        PageViewModel.Response = await HttpClient.SendAsync(_request.CreateHttpRequest());
 
         if (_response is not null)
         {
@@ -505,34 +406,12 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
 
     public class OpenApiViewModel
     {
-        public required OpenApiDocument? Document { get; set; }
-        public required Dictionary<string, List<OpenApiViewModelMethod>>? Methods { get; set; }
+        public required OpenApiModel? Model { get; set; }
+        public HttpResponseMessage? Response { get; set; }
+        public OpenApiMethod? SelectedMethod { get; set; }
         public required SelectViewModel<ResourceTypeDetails> SelectedOption { get; set; }
-        public OpenApiViewModelMethod? SelectedMethod { get; set; }
         public required ResourceViewModel? SelectedResource { get; set; }
         public FluentTreeItem? SelectedTreeItem { get; set; }
-    }
-
-    public class OpenApiViewModelParameter
-    {
-        public required bool IsInPath { get; set; }
-        public required bool IsInQuery { get; set; }
-        public required bool IsRequired { get; set; }
-        public required string Name { get; set; }
-        public required string Type { get; set; }
-        public string? Value { get; set; }
-    }
-
-    public class OpenApiViewModelMethod
-    {
-        public required string BadgeColor { get; set; }
-        public required string Description { get; set; }
-        public required string Id { get; set; }
-        public required HttpMethod Method { get; set; }
-        public required string Name { get; set; }
-        public required List<OpenApiViewModelParameter> RequestParameters { get; set; }
-        public HttpResponseMessage? Response { get; set; }
-        public required string Url { get; set; }
     }
 
     internal static ImmutableList<SelectViewModel<ResourceTypeDetails>> GetConsoleLogResourceSelectViewModels(

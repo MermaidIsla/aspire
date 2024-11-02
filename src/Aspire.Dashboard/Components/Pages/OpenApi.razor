@@ -25,13 +25,14 @@
                 @bind-SelectedResource="PageViewModel.SelectedOption"
                 @bind-SelectedResource:after="HandleSelectedOptionChangedAsync" />
 
-            @if (!ViewportInformation.IsDesktop && PageViewModel.Methods != null)
+            @if (!ViewportInformation.IsDesktop && PageViewModel.Model is not null)
             {
                 <TreeOpenApiMethodSelector
                     @ref="_treeOpenApiMethodSelector"
                     HandleSelectedTreeItemChangedAsync="@HandleSelectedTreeItemChangedAsync"
-                    PageViewModel="@PageViewModel"
-                    IncludeLabel="true"/>
+                    IncludeLabel="true"
+                    SelectedTreeItem="@PageViewModel.SelectedTreeItem"
+                    Tags="@PageViewModel.Model.Tags" />
             }
         </ToolbarSection>
         <MainSection>
@@ -51,7 +52,7 @@
                         }
                     </div>
                 }
-                else if (PageViewModel.Methods == null)
+                else if (PageViewModel.Model == null)
                 {
                     <div class="empty-content">
                         @if (ViewportInformation.IsDesktop)
@@ -81,16 +82,16 @@
                                 <TreeOpenApiMethodSelector
                                     @ref="_treeOpenApiMethodSelector"
                                     HandleSelectedTreeItemChangedAsync="@HandleSelectedTreeItemChangedAsync"
-                                    PageViewModel="@PageViewModel"
-                                    IncludeLabel="false"/>
+                                    SelectedTreeItem="@PageViewModel.SelectedTreeItem"
+                                    Tags="@PageViewModel.Model.Tags" />
                             }
                         </Panel1>
                         <Panel2>
                             <SummaryDetailsView
                                 @ref="_summaryDetailsView"
-                                ShowDetails="@(PageViewModel.SelectedMethod?.Response is not null)"
+                                ShowDetails="@(PageViewModel.Response is not null)"
                                 OnDismiss="@(() => ClearMethodResponse())"
-                                SelectedValue="@PageViewModel.SelectedMethod?.Response"
+                                SelectedValue="@PageViewModel.Response"
                                 ViewKey="OpenApiResponse">
                                 
                                 <Summary>
@@ -121,9 +122,10 @@
                                             </header>
                                             <OpenApiRequest
                                                 @ref="_request"
-                                                Document="@PageViewModel.Document"
-                                                Method="@PageViewModel.SelectedMethod.Method"
-                                                Path="@PageViewModel.SelectedMethod.Name" />
+                                                Document="@PageViewModel.Model.Document"
+                                                Operation="@PageViewModel.Model.GetOperationFromMethod(PageViewModel.SelectedMethod)"
+                                                Method="@HttpMethod.Parse(PageViewModel.SelectedMethod.MethodName)"
+                                                Path="@PageViewModel.SelectedMethod.Path" />
                                         </div>
                                     }
                                 </Summary>

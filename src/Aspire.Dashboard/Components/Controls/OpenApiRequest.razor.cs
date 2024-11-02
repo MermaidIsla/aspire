@@ -23,6 +23,9 @@ public sealed partial class OpenApiRequest : ComponentBase
     public required OpenApiDocument Document { get; set; }
 
     [Parameter, EditorRequired]
+    public required OpenApiOperation Operation { get; set; }
+
+    [Parameter, EditorRequired]
     public required HttpMethod Method { get; set; }
 
     [Parameter, EditorRequired]
@@ -118,11 +121,8 @@ public sealed partial class OpenApiRequest : ComponentBase
 
     public async Task UpdateRequest()
     {
-        var selectedPath = Document.Paths.First((path) => path.Key == Path).Value;
-        var selectedOperation = selectedPath.Operations.First((operation) => operation.Key.ToString().Equals(Method.ToString(), StringComparison.OrdinalIgnoreCase)).Value;
-
         _body = string.Empty;
-        _headers = selectedOperation.Parameters
+        _headers = Operation.Parameters
             .Where((parameter) => parameter.In == ParameterLocation.Header)
             .Select((parameter) => new OpenApiRequestHeader
             {
@@ -133,7 +133,7 @@ public sealed partial class OpenApiRequest : ComponentBase
             }).AsQueryable();
         _methodColor = OpenApiUtils.GetBadgeColorFromHttpMethod(Method);
         _methodName = Method.ToString();
-        _parameters = selectedOperation.Parameters
+        _parameters = Operation.Parameters
             .Where((parameter) => parameter.In == ParameterLocation.Path || parameter.In == ParameterLocation.Query)
             .Select((parameter) => new OpenApiRequestParameter
             {
