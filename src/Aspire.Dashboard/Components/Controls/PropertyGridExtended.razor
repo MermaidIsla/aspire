@@ -1,0 +1,62 @@
+﻿@using Aspire.Dashboard.Components.Controls.Grid
+@using Aspire.Dashboard.Resources
+
+@typeparam TItem where TItem : IPropertyGridExtendedItem
+
+@inject IStringLocalizer<ControlsStrings> Loc
+
+<FluentDataGrid ResizeLabel="@AspireFluentDataGridHeaderCell.GetResizeLabel(Loc)"
+                ResizeType="DataGridResizeType.Discrete"
+                Items="@Items"
+                ItemKey="@ItemKey"
+                ResizableColumns="true"
+                Style="width: 100%"
+                GenerateHeader="@GenerateHeader"
+                GridTemplateColumns="@GridTemplateColumns"
+                ShowHover="true">
+    <AspireTemplateColumn Title="@(NameColumnTitle ?? Loc[nameof(ControlsStrings.NameColumnHeader)])" Class="nameColumn" SortBy="@NameSort" Sortable="@IsNameSortable">
+        <GridValue
+            EnableHighlighting="@(!string.IsNullOrEmpty(HighlightText))"
+            HighlightText="@HighlightText"
+            ValueDescription="@(NameColumnTitle ?? Loc[nameof(ControlsStrings.NameColumnHeader)])"
+            Value="@context.Name">
+            <ContentAfterValue>
+                @if (context.IsRequired)
+                {
+                    <span style="color: lightcoral"> *</span>
+                }
+            </ContentAfterValue>
+        </GridValue>
+    </AspireTemplateColumn>
+    <AspireTemplateColumn Title="@(ValueColumnTitle ?? Loc[nameof(ControlsStrings.PropertyGridValueColumnHeader)])" Class="valueColumn" SortBy="@ValueSort" Sortable="@IsValueSortable">
+        @if (EnableEditing)
+        {
+            <FluentTextField
+                Placeholder="@context.ValueType"
+                Style="width: 100%"
+                Value="@context.Value"
+                ValueChanged="@((value) => OnValueChanged(context, value))">
+                @if (context.ValueType is not null)
+                {
+                    <FluentBadge BackgroundColor="gray" Fill="hightlight" slot="end">@context.ValueType</FluentBadge>
+                }
+            </FluentTextField>
+        }
+        else
+        {
+            <GridValue
+                ContentAfterValue="@ContentAfterValue(context)"
+                EnableHighlighting="@(!string.IsNullOrEmpty(HighlightText))"
+                EnableMasking="@context.IsValueSensitive"
+                IsMasked="@context.IsValueMasked"
+                IsMaskedChanged="(isMasked) => OnIsValueMaskedChanged(context, isMasked)"
+                HighlightText="@HighlightText"
+                TextVisualizerTitle="@context.Name"
+                ValueDescription="@(ValueColumnTitle ?? Loc[nameof(ControlsStrings.PropertyGridValueColumnHeader)])"
+                Value="@context.Value"
+                ValueToCopy="@(context.ValueToCopy ?? context.Value)"
+                ValueToVisualize="@(context.ValueToVisualize ?? context.Value)" />
+        }
+        @ExtraValueContent(context)
+    </AspireTemplateColumn>
+</FluentDataGrid>
