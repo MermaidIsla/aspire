@@ -251,4 +251,7 @@
   <data name="TextVisualizerEditorDialogEditingText" xml:space="preserve">
     <value>Editing</value>
   </data>
+  <data name="PropertyGridEditorDialogEditingText" xml:space="preserve">
+    <value>Editing</value>
+  </data>
 </root>

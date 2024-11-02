@@ -172,6 +172,11 @@
         <target state="translated">En attente du chargement du {0} de trace...</target>
         <note>{0} is a trace ID</note>
       </trans-unit>
+      <trans-unit id="PropertyGridEditorDialogEditingText">
+        <source>Editing</source>
+        <target state="new">Editing</target>
+        <note />
+      </trans-unit>
       <trans-unit id="SettingsDialogDarkTheme">
         <source>Dark</source>
         <target state="translated">Sombre</target>

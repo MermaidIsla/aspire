@@ -367,6 +367,15 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Editing.
+        /// </summary>
+        public static string PropertyGridEditorDialogEditingText {
+            get {
+                return ResourceManager.GetString("PropertyGridEditorDialogEditingText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dark.
         /// </summary>
         public static string SettingsDialogDarkTheme {
