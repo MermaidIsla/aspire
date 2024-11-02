@@ -27,11 +27,12 @@
                 <FluentBadge Appearance="Appearance.Neutral" Circular="true" slot="end">
                     @_headers.Count()
                 </FluentBadge>
-                <PropertyGrid TItem="OpenApiRequestHeader"
-                              Items="@FilteredHeaders"
-                              IsValueSortable="false"
-                              HighlightText="@_filter"
-                              GridTemplateColumns="1fr 1.5fr" />
+                <PropertyGridExtended
+                    TItem="OpenApiRequestHeader"
+                    Items="@FilteredHeaders"
+                    IsValueSortable="false"
+                    HighlightText="@_filter"
+                    GridTemplateColumns="1fr 1.5fr" />
 
                 <FluentButton Id="@_editHeadersButtonId"
                               IconStart="@(new Icons.Regular.Size16.Edit())"
@@ -45,11 +46,12 @@
                 <FluentBadge Appearance="Appearance.Neutral" Circular="true" slot="end">
                     @_parameters.Count()
                 </FluentBadge>
-                <PropertyGrid TItem="OpenApiRequestParameter"
-                              Items="@FilteredParameters"
-                              IsValueSortable="false"
-                              HighlightText="@_filter"
-                              GridTemplateColumns="1fr 1.5fr" />
+                <PropertyGridExtended
+                    TItem="OpenApiRequestParameter"
+                    Items="@FilteredParameters"
+                    IsValueSortable="false"
+                    HighlightText="@_filter"
+                    GridTemplateColumns="1fr 1.5fr" />
 
                 <FluentButton Id="@_editParametersButtonId"
                               IconStart="@(new Icons.Regular.Size16.Edit())"
