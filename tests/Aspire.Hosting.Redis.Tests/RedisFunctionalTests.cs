@@ -130,7 +130,7 @@ public class RedisFunctionalTests(ITestOutputHelper testOutputHelper)
 
         var configure = (DistributedApplicationOptions options) =>
         {
-            options.ContainerRegistryOverride = TestConstants.AspireTestContainerRegistry;
+            options.ContainerRegistryOverride = ComponentTestConstants.AspireTestContainerRegistry;
         };
 
         using var builder1 = TestDistributedApplicationBuilder.Create(configure, testOutputHelper);
@@ -298,7 +298,7 @@ public class RedisFunctionalTests(ITestOutputHelper testOutputHelper)
         var redis1 = builder1.AddRedis("redis");
 
         // Use a deterministic volume name to prevent them from exhausting the machines if deletion fails
-        var volumeName = VolumeNameGenerator.CreateVolumeName(redis1, nameof(WithDataVolumeShouldPersistStateBetweenUsages));
+        var volumeName = VolumeNameGenerator.Generate(redis1, nameof(WithDataVolumeShouldPersistStateBetweenUsages));
         redis1.WithDataVolume(volumeName);
         // if the volume already exists (because of a crashing previous run), delete it
         DockerUtils.AttemptDeleteDockerVolume(volumeName, throwOnFailure: true);
