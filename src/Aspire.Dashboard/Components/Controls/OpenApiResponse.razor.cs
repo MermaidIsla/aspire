@@ -1,14 +1,18 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Aspire.Dashboard.Utils;
 using Microsoft.AspNetCore.Components;
 
 namespace Aspire.Dashboard.Components.Controls;
 
 public sealed partial class OpenApiResponse : ComponentBase
 {
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
+
     [Parameter, EditorRequired]
-    public required HttpResponseMessage Response { get; set; }
+    public required KeyValuePair<string, HttpResponseMessage> Response { get; set; }
 
     private string _body = string.Empty;
     private string _filter = string.Empty;
@@ -21,13 +25,19 @@ public sealed partial class OpenApiResponse : ComponentBase
         await UpdateResponse();
     }
 
+    private Task OnButtonViewTraceDetailClick()
+    {
+        NavigationManager.NavigateTo(DashboardUrls.TraceDetailUrl(Response.Key));
+        return Task.CompletedTask;
+    }
+
     public async Task UpdateResponse()
     {
-        _body = await Response.Content.ReadAsStringAsync();
-        _headers = Response.Content.Headers.AsQueryable().Select(x => new OpenApiResponseHeader
+        _body = await Response.Value.Content.ReadAsStringAsync();
+        _headers = Response.Value.Content.Headers.AsQueryable().Select(x => new OpenApiResponseHeader
         {
             Name = x.Key,
-            Value = x.Value.FirstOrDefault() ?? string.Empty
+            Value = string.Join(',', x.Value)
         });
 
         await InvokeAsync(StateHasChanged);

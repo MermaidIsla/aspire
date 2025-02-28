@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -171,5 +171,8 @@
   </data>
   <data name="OpenApiRequestButtonEditBodyText" xml:space="preserve">
     <value>Edit body</value>
+  </data>
+  <data name="OpenApiResponseButtonViewTraceDetails" xml:space="preserve">
+    <value>View Trace Details</value>
   </data>
 </root>

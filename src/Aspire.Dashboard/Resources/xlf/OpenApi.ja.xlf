@@ -52,6 +52,11 @@
         <target state="new">Parameters</target>
         <note />
       </trans-unit>
+      <trans-unit id="OpenApiResponseButtonViewTraceDetails">
+        <source>View Trace Details</source>
+        <target state="new">View Trace Details</target>
+        <note />
+      </trans-unit>
       <trans-unit id="OpenApiSelectAMethod">
         <source>Select a method</source>
         <target state="new">Select a method</target>

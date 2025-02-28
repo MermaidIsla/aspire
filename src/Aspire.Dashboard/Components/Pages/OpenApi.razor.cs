@@ -66,7 +66,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     private readonly CancellationTokenSource _resourceSubscriptionCts = new();
     private Task? _resourceSubscriptionTask;
     private CancellationToken _resourceSubscriptionToken;
-    private SummaryDetailsView<HttpResponseMessage?>? _summaryDetailsView;
+    private SummaryDetailsView<KeyValuePair<string, HttpResponseMessage>?>? _summaryDetailsView;
     private TreeOpenApiMethodSelector? _treeOpenApiMethodSelector;
 
     // UI
@@ -342,7 +342,9 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             return;
         }
 
-        PageViewModel.Response = await HttpClient.SendAsync(_request.CreateHttpRequest());
+        var traceId = Guid.NewGuid().ToString("N");
+        var httpResponse = await HttpClient.SendAsync(_request.CreateHttpRequest(traceId));
+        PageViewModel.Response = new KeyValuePair<string, HttpResponseMessage>(traceId, httpResponse);
 
         if (_response is not null)
         {
@@ -407,7 +409,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     public class OpenApiViewModel
     {
         public required OpenApiModel? Model { get; set; }
-        public HttpResponseMessage? Response { get; set; }
+        public KeyValuePair<string, HttpResponseMessage>? Response { get; set; }
         public OpenApiMethod? SelectedMethod { get; set; }
         public required SelectViewModel<ResourceTypeDetails> SelectedOption { get; set; }
         public required ResourceViewModel? SelectedResource { get; set; }

@@ -1,6 +1,7 @@
 ﻿@using Aspire.Dashboard.Resources
 
 @inject IStringLocalizer<ControlsStrings> ControlStringsLoc
+@inject IStringLocalizer<OpenApi> Loc
 
 <div class="openapi-response-layout">
     <FluentToolbar Orientation="Orientation.Horizontal">
@@ -27,5 +28,10 @@
                 <TextVisualizer Text="@_body" />
             </FluentAccordionItem>
         </FluentAccordion>
+        <FluentButton IconStart="@(new Icons.Regular.Size16.Info())"
+                      Style="margin-top: 8px; float: right"
+                      OnClick="OnButtonViewTraceDetailClick">
+            @Loc[nameof(OpenApi.OpenApiResponseButtonViewTraceDetails)]
+        </FluentButton>
     </div>
 </div>

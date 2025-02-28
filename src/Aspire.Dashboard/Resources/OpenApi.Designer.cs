@@ -151,6 +151,15 @@ namespace Aspire.Dashboard.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View Trace Details.
+        /// </summary>
+        public static string OpenApiResponseButtonViewTraceDetails {
+            get {
+                return ResourceManager.GetString("OpenApiResponseButtonViewTraceDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select a method.
         /// </summary>
         public static string OpenApiSelectAMethod {

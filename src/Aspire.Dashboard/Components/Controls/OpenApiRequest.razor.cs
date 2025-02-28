@@ -19,6 +19,9 @@ public sealed partial class OpenApiRequest : ComponentBase
     [Inject]
     public required IDialogService DialogService { get; init; }
 
+    [Inject]
+    public required ILogger<OpenApiRequest> Logger { get; init; }
+
     [Parameter, EditorRequired]
     public required OpenApiDocument Document { get; set; }
 
@@ -46,7 +49,7 @@ public sealed partial class OpenApiRequest : ComponentBase
     private IQueryable<OpenApiRequestHeader> FilteredHeaders => _headers.Where(header => header.MatchesFilter(_filter));
     private IQueryable<OpenApiRequestParameter> FilteredParameters => _parameters.Where(header => header.MatchesFilter(_filter));
 
-    public HttpRequestMessage CreateHttpRequest()
+    public HttpRequestMessage CreateHttpRequest(string traceId)
     {
         var url = _url;
 
@@ -56,7 +59,7 @@ public sealed partial class OpenApiRequest : ComponentBase
             {
                 if (parameter.IsRequired)
                 {
-                    throw new ArgumentNullException();
+                    throw new InvalidOperationException("Required parameter mustn't have a null value!");
                 }
 
                 continue;
@@ -85,7 +88,12 @@ public sealed partial class OpenApiRequest : ComponentBase
         foreach (var header in _headers)
         {
             request.Headers.Add(header.Name, header.Value);
-        };
+        }
+
+        // I'm very much sure that I'm breaking the standard but this is the only way I managed to get
+        // individual traces to work, otherwise any request made through the dashboard would be clumped
+        // into one trace creating meaningless and honestly misleading traces.
+        request.Headers.Add("traceparent", $"00-{traceId}-{traceId.Substring(0, 16)}-00");
 
         return request;
     }

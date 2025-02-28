@@ -132,11 +132,11 @@
                                 <Details>
                                     <OpenApiResponse
                                         @ref="_response"
-                                        Response="@context" />
+                                        Response="@context!.Value" />
                                 </Details>
                                 <DetailsTitleTemplate>
                                     API Response
-                                    <FluentBadge BackgroundColor="@(context!.IsSuccessStatusCode ? "green" : "red")" Fill="highlight" slot="end">@((int)context.StatusCode) @context.StatusCode</FluentBadge>
+                                    <FluentBadge BackgroundColor="@(context!.Value.Value.IsSuccessStatusCode ? "green" : "red")" Fill="highlight" slot="end">@((int)context.Value.Value.StatusCode) @context.Value.Value.StatusCode</FluentBadge>
                                 </DetailsTitleTemplate>
                             </SummaryDetailsView>
                         </Panel2>
