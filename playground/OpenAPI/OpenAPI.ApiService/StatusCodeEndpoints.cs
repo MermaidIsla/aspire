@@ -11,8 +11,14 @@ public static class StatusCodeEndpoints
     {
         // 2xx codes
 
-        app.MapGet("/status-code/200", () =>
+        app.MapGet("/status-code/200", (ILogger<Program> logger, HttpContext context) =>
         {
+            logger.LogInformation("Count: {Count}", context.Request.Headers.Count);
+            foreach (var pair in context.Request.Headers)
+            {
+                logger.LogInformation("{Key}: {Value}", pair.Key, string.Join(',', pair.Value.AsEnumerable()));
+            }
+
             return Results.Content("", ContentTypes.TextPlain, Encoding.UTF8, StatusCodes.Status200OK);
         })
             .Produces<string>(StatusCodes.Status200OK, ContentTypes.TextPlain)
