@@ -13,6 +13,7 @@ using NATS.Client.JetStream.Models;
 using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Aspire.Hosting.Tests.Utils;
+
 namespace Aspire.Hosting.Nats.Tests;
 
 public class NatsFunctionalTests(ITestOutputHelper testOutputHelper)
@@ -58,6 +59,96 @@ public class NatsFunctionalTests(ITestOutputHelper testOutputHelper)
     }
 
     [Theory]
+    [RequiresDocker]
+    [InlineData(null, null)]
+    [InlineData("nats", null)]
+    [InlineData(null, "password")]
+    [InlineData("nats", "password")]
+    public async Task AuthenticationShouldWork(string? user, string? password)
+    {
+        var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+      
+        using var builder = TestDistributedApplicationBuilder.CreateWithTestContainerRegistry(testOutputHelper);
+
+        var usernameParameter = user is null ? null : builder.AddParameter("user", user);
+        var passwordParameter = password is null ? null : builder.AddParameter("pass", password);
+
+        var nats = builder.AddNats("nats", userName: usernameParameter, password: passwordParameter);
+
+        using var app = builder.Build();
+
+        await app.StartAsync();
+
+        await app.WaitForTextAsync("Listening for client connections", nats.Resource.Name);
+
+        var hb = Host.CreateApplicationBuilder();
+
+        var connectionString = await nats.Resource.ConnectionStringExpression.GetValueAsync(default);
+        hb.Configuration[$"ConnectionStrings:{nats.Resource.Name}"] = connectionString;
+
+        hb.AddNatsClient("nats", configureOptions: opts =>
+        {
+            var jsonRegistry = new NatsJsonContextSerializerRegistry(AppJsonContext.Default);
+            return opts with { SerializerRegistry = jsonRegistry };
+        });
+
+        using var host = hb.Build();
+
+        await host.StartAsync();
+
+        var natsConnection = host.Services.GetRequiredService<INatsConnection>();
+        await natsConnection.ConnectAsync();
+        Assert.Equal(NatsConnectionState.Open, natsConnection.ConnectionState);
+    }
+
+    [Theory]
+    [RequiresDocker]
+    [InlineData("user", "wrong-password")]
+    [InlineData("wrong-user", "password")]
+    [InlineData(null, null)]
+    public async Task AuthenticationShouldFailOnWrongOrMissingCredentials(string? user, string? password)
+    {
+        var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+
+        using var builder = TestDistributedApplicationBuilder.CreateWithTestContainerRegistry(testOutputHelper);
+
+        var usernameParameter = builder.AddParameter("user", "user");
+        var passwordParameter = builder.AddParameter("pass", "password");
+
+        var nats = builder.AddNats("nats", userName: usernameParameter, password: passwordParameter);
+
+        using var app = builder.Build();
+
+        await app.StartAsync();
+
+        await app.WaitForTextAsync("Listening for client connections", nats.Resource.Name);
+
+        var hb = Host.CreateApplicationBuilder();
+
+        var connectionString = await nats.Resource.ConnectionStringExpression.GetValueAsync(default);
+        var modifiedConnectionString = user is null
+            ? connectionString!.Replace(new Uri(connectionString).UserInfo, null)
+            : connectionString!.Replace("user", user).Replace("password", password);
+
+        hb.Configuration[$"ConnectionStrings:{nats.Resource.Name}"] = modifiedConnectionString;
+
+        hb.AddNatsClient("nats", configureOptions: opts =>
+        {
+            var jsonRegistry = new NatsJsonContextSerializerRegistry(AppJsonContext.Default);
+            return opts with { SerializerRegistry = jsonRegistry };
+        });
+
+        using var host = hb.Build();
+
+        await host.StartAsync();
+
+        var natsConnection = host.Services.GetRequiredService<INatsConnection>();
+
+        var exception = await Assert.ThrowsAsync<NatsException>(async () => await natsConnection.ConnectAsync());
+        Assert.IsType<NatsServerException>(exception.InnerException);
+    }
+
+    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     [RequiresDocker]
@@ -84,6 +175,7 @@ public class NatsFunctionalTests(ITestOutputHelper testOutputHelper)
             else
             {
                 bindMountPath = Directory.CreateTempSubdirectory().FullName;
+
                 nats1.WithDataBindMount(bindMountPath);
             }
 
@@ -249,17 +341,15 @@ public class NatsFunctionalTests(ITestOutputHelper testOutputHelper)
 
         var pendingStart = app.StartAsync(cts.Token);
 
-        var rns = app.Services.GetRequiredService<ResourceNotificationService>();
+        await app.ResourceNotifications.WaitForResourceAsync(resource.Resource.Name, KnownResourceStates.Running, cts.Token);
 
-        await rns.WaitForResourceAsync(resource.Resource.Name, KnownResourceStates.Running, cts.Token);
-
-        await rns.WaitForResourceAsync(dependentResource.Resource.Name, KnownResourceStates.Waiting, cts.Token);
+        await app.ResourceNotifications.WaitForResourceAsync(dependentResource.Resource.Name, KnownResourceStates.Waiting, cts.Token);
 
         healthCheckTcs.SetResult(HealthCheckResult.Healthy());
 
-        await rns.WaitForResourceHealthyAsync(resource.Resource.Name, cts.Token);
+        await app.ResourceNotifications.WaitForResourceHealthyAsync(resource.Resource.Name, cts.Token);
 
-        await rns.WaitForResourceAsync(dependentResource.Resource.Name, KnownResourceStates.Running, cts.Token);
+        await app.ResourceNotifications.WaitForResourceAsync(dependentResource.Resource.Name, KnownResourceStates.Running, cts.Token);
 
         await pendingStart;
 

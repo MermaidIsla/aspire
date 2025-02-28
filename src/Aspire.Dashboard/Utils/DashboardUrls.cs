@@ -8,15 +8,26 @@ namespace Aspire.Dashboard.Utils;
 
 internal static class DashboardUrls
 {
+    public const string ResourcesBasePath = "";
     public const string ConsoleLogBasePath = "consolelogs";
     public const string MetricsBasePath = "metrics";
     public const string StructuredLogsBasePath = "structuredlogs";
     public const string TracesBasePath = "traces";
     public const string OpenApiBasePath = "openapi";
 
-    public static string ResourcesUrl()
+    public static string ResourcesUrl(string? resource = null, string? view = null)
     {
-        return "/";
+        var url = $"/{ResourcesBasePath}";
+        if (resource != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "resource", resource);
+        }
+        if (view != null)
+        {
+            url = QueryHelpers.AddQueryString(url, "view", view);
+        }
+
+        return url;
     }
 
     public static string ConsoleLogsUrl(string? resource = null)
@@ -139,6 +150,15 @@ internal static class DashboardUrls
         {
             url += $"/resource/{Uri.EscapeDataString(resource)}";
         }
+        
+        return url;
+    }
+
+    public static string SetLanguageUrl(string language, string redirectUrl)
+    {
+        var url = "/api/set-language";
+        url = QueryHelpers.AddQueryString(url, "language", language);
+        url = QueryHelpers.AddQueryString(url, "redirectUrl", redirectUrl);
 
         return url;
     }
