@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <AspireProjectOrPackageReference Include="Aspire.Hosting.AppHost" />
+    <AspireProjectOrPackageReference Include="Aspire.Hosting.SqlServer" />
     
     <ProjectReference Include="..\OpenAPI.ApiService\OpenAPI.ApiService.csproj" />
   </ItemGroup>

@@ -3,6 +3,13 @@
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddProject<Projects.OpenAPI_ApiService>("apiservice");
+var password = builder.AddParameter("password", true);
+var sqlServer = builder.AddSqlServer("sqlServer", password)
+    .WithLifetime(ContainerLifetime.Persistent);
+var database = sqlServer.AddDatabase("master");
+
+builder.AddProject<Projects.OpenAPI_ApiService>("apiservice")
+    .WithReference(database)
+    .WaitFor(database);
 
 builder.Build().Run();
