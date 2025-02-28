@@ -1,4 +1,7 @@
 <Project>
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Packages.Helix.props" Condition="'$(TestsRunningOutsideOfRepo)' == 'true'" />
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../'))" Condition="'$(TestsRunningOutsideOfRepo)' != 'true'" />
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+  </ItemGroup>
 </Project>

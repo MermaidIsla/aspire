@@ -171,6 +171,9 @@
     <PackageVersion Include="Azure.Identity" Version="1.13.2" />
     <!-- https://github.com/Azure/azure-cosmos-dotnet-v3/pull/3313 -->
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <!-- OpenAPI -->
+    <PackageVersion Include="Microsoft.OpenApi" Version="1.6.23" />
+    <PackageVersion Include="Microsoft.OpenApi.Readers" Version="1.6.23" />
   </ItemGroup>
 
   <!-- The following 2 groups are for packages that need to switch based on the .NET TFM being used. -->
@@ -204,9 +207,6 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsHttpLTSVersion)" />
     <PackageVersion Include="System.Formats.Asn1" Version="$(SystemFormatsAsn1LTSVersion)" />
     <PackageVersion Include="System.Text.Json" Version="$(SystemTextJsonLTSVersion)" />
-    <!-- OpenAPI -->
-    <PackageVersion Include="Microsoft.OpenApi" Version="$(MicrosoftOpenApiLTSVersion)" />
-    <PackageVersion Include="Microsoft.OpenApi.Readers" Version="$(MicrosoftOpenApiReadersLTSVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
@@ -238,8 +238,5 @@
     <PackageVersion Update="Microsoft.Extensions.Http" Version="$(MicrosoftExtensionsHttpVersion)" />
     <PackageVersion Update="System.Formats.Asn1" Version="$(SystemFormatsAsn1Version)" />
     <PackageVersion Update="System.Text.Json" Version="$(SystemTextJsonVersion)" />
-    <!-- OpenAPI -->
-    <PackageVersion Include="Microsoft.OpenApi" Version="$(MicrosoftOpenApiVersion)" />
-    <PackageVersion Include="Microsoft.OpenApi.Readers" Version="$(MicrosoftOpenApiReadersVersion)" />
   </ItemGroup>
 </Project>

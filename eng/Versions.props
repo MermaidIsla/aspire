@@ -6,6 +6,8 @@
     <PatchVersion>0</PatchVersion>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <PreReleaseVersionLabel>preview.1</PreReleaseVersionLabel>
+    <!-- <DefaultTargetFramework>net8.0</DefaultTargetFramework> -->
+    <!-- <AllTargetFrameworks>$(DefaultTargetFramework);net9.0</AllTargetFrameworks> -->
     <DefaultTargetFramework>net8.0</DefaultTargetFramework>
     <AllTargetFrameworks>$(DefaultTargetFramework);net9.0</AllTargetFrameworks>
     <!-- dotnet 8.0 versions for running tests -->
@@ -42,9 +44,6 @@
     <MicrosoftExtensionsTimeProviderTestingVersion>9.2.0</MicrosoftExtensionsTimeProviderTestingVersion>
     <!-- for templates -->
     <MicrosoftAspNetCorePackageVersionForNet9>9.0.2</MicrosoftAspNetCorePackageVersionForNet9>
-    <!-- OpenAPI -->
-    <MicrosoftOpenApiPackageVersion>1.6.22</MicrosoftOpenApiPackageVersion>
-    <MicrosoftOpenApiReadersPackageVersion>1.6.22</MicrosoftOpenApiReadersPackageVersion>
   </PropertyGroup>
   <!-- .NET 9.0 Package Versions -->
   <PropertyGroup Label="Current">
