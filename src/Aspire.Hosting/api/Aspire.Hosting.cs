@@ -56,6 +56,9 @@ namespace Aspire.Hosting
         public static ApplicationModel.IResourceBuilder<T> WithImage<T>(this ApplicationModel.IResourceBuilder<T> builder, string image, string? tag = null)
             where T : ApplicationModel.ContainerResource { throw null; }
 
+        public static ApplicationModel.IResourceBuilder<T> WithImagePullPolicy<T>(this ApplicationModel.IResourceBuilder<T> builder, ApplicationModel.ImagePullPolicy pullPolicy)
+            where T : ApplicationModel.ContainerResource { throw null; }
+
         public static ApplicationModel.IResourceBuilder<T> WithImageRegistry<T>(this ApplicationModel.IResourceBuilder<T> builder, string? registry)
             where T : ApplicationModel.ContainerResource { throw null; }
 
@@ -407,7 +410,10 @@ namespace Aspire.Hosting
         public static ApplicationModel.IResourceBuilder<T> WithConnectionStringRedirection<T>(this ApplicationModel.IResourceBuilder<T> builder, ApplicationModel.IResourceWithConnectionString resource)
             where T : ApplicationModel.IResourceWithConnectionString { throw null; }
 
-        public static ApplicationModel.IResourceBuilder<T> WithEndpoint<T>(this ApplicationModel.IResourceBuilder<T> builder, int? port = null, int? targetPort = null, string? scheme = null, string? name = null, string? env = null, bool isProxied = true, bool? isExternal = null)
+        public static ApplicationModel.IResourceBuilder<T> WithEndpoint<T>(this ApplicationModel.IResourceBuilder<T> builder, int? port = null, int? targetPort = null, string? scheme = null, string? name = null, string? env = null, bool isProxied = true, bool? isExternal = null, System.Net.Sockets.ProtocolType? protocol = null)
+            where T : ApplicationModel.IResourceWithEndpoints { throw null; }
+
+        public static ApplicationModel.IResourceBuilder<T> WithEndpoint<T>(this ApplicationModel.IResourceBuilder<T> builder, int? port, int? targetPort, string? scheme, string? name, string? env, bool isProxied, bool? isExternal)
             where T : ApplicationModel.IResourceWithEndpoints { throw null; }
 
         public static ApplicationModel.IResourceBuilder<T> WithEndpoint<T>(this ApplicationModel.IResourceBuilder<T> builder, string endpointName, System.Action<ApplicationModel.EndpointAnnotation> callback, bool createIfNotExists = true)
@@ -631,6 +637,12 @@ namespace Aspire.Hosting.ApplicationModel
         public string? SHA256 { get { throw null; } set { } }
 
         public string? Tag { get { throw null; } set { } }
+    }
+
+    [System.Diagnostics.DebuggerDisplay("Type = {GetType().Name,nq}")]
+    public sealed partial class ContainerImagePullPolicyAnnotation : IResourceAnnotation
+    {
+        public required ImagePullPolicy ImagePullPolicy { get { throw null; } set { } }
     }
 
     public enum ContainerLifetime
@@ -1002,6 +1014,13 @@ namespace Aspire.Hosting.ApplicationModel
     {
         Regular = 0,
         Filled = 1
+    }
+
+    public enum ImagePullPolicy
+    {
+        Default = 0,
+        Always = 1,
+        Missing = 2
     }
 
     public partial interface IManifestExpressionProvider
