@@ -11,7 +11,7 @@ internal static class SqlEndpoints
     {
         app.MapGet("/sql/select", async (SqlConnection connection) =>
         {
-            await connection.OpenAsync();
+            await connection.OpenAsync().ConfigureAwait(false);
 
             var result = new List<int>();
 
@@ -19,7 +19,7 @@ internal static class SqlEndpoints
             {
                 command.CommandText = "select 1 union select 2 union select 3";
 
-                using (var reader = await command.ExecuteReaderAsync())
+                using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                 {
                     while (reader.Read())
                     {
