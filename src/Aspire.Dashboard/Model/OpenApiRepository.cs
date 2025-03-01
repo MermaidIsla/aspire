@@ -25,6 +25,12 @@ public sealed class OpenApiRepository
             return null;
         }
 
+        // Only HTTP and HTTPS urls are supported for now
+        if (!baseUrl.StartsWith("http"))
+        {
+            return null;
+        }
+
         var response = await _httpClient.SendAsync(new HttpRequestMessage
         {
             Method = HttpMethod.Get,
