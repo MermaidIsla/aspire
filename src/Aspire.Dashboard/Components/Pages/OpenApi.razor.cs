@@ -66,6 +66,7 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
     private readonly CancellationTokenSource _resourceSubscriptionCts = new();
     private Task? _resourceSubscriptionTask;
     private CancellationToken _resourceSubscriptionToken;
+    private bool _sendingRequest;
     private SummaryDetailsView<KeyValuePair<string, HttpResponseMessage>?>? _summaryDetailsView;
     private TreeOpenApiMethodSelector? _treeOpenApiMethodSelector;
 
@@ -342,13 +343,21 @@ public sealed partial class OpenApi : ComponentBase, IAsyncDisposable, IPageWith
             return;
         }
 
-        var traceId = Guid.NewGuid().ToString("N");
-        var httpResponse = await HttpClient.SendAsync(_request.CreateHttpRequest(traceId));
-        PageViewModel.Response = new KeyValuePair<string, HttpResponseMessage>(traceId, httpResponse);
-
-        if (_response is not null)
+        _sendingRequest = true;
+        try
         {
-            await _response.UpdateResponse();
+            var traceId = Guid.NewGuid().ToString("N");
+            var httpResponse = await HttpClient.SendAsync(_request.CreateHttpRequest(traceId));
+            PageViewModel.Response = new KeyValuePair<string, HttpResponseMessage>(traceId, httpResponse);
+
+            if (_response is not null)
+            {
+                await _response.UpdateResponse();
+            }
+        }
+        finally
+        {
+            _sendingRequest = false;
         }
     }
 

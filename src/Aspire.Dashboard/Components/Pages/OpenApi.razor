@@ -11,28 +11,28 @@
 
 <div class="page-content-container">
     <AspirePageContentLayout
-        AddNewlineOnToolbar="true"
-        @ref="_contentLayout"
-        HeaderStyle="margin-bottom: calc(var(--design-unit) * 2px);"
-        MobileToolbarButtonText="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiViewAttributesToolbar)]">
+    AddNewlineOnToolbar="true"
+    @ref="_contentLayout"
+    HeaderStyle="margin-bottom: calc(var(--design-unit) * 2px);"
+    MobileToolbarButtonText="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiViewAttributesToolbar)]">
         <PageTitleSection>
             <h1 class="page-header">@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiHeader)]</h1>
         </PageTitleSection>
         <ToolbarSection>
             <ResourceSelect
-                Resources="_resources"
-                AriaLabel="@ControlsStringsLoc[nameof(ControlsStrings.ResourceLabel)]"
-                @bind-SelectedResource="PageViewModel.SelectedOption"
-                @bind-SelectedResource:after="HandleSelectedOptionChangedAsync" />
+            Resources="_resources"
+            AriaLabel="@ControlsStringsLoc[nameof(ControlsStrings.ResourceLabel)]"
+            @bind-SelectedResource="PageViewModel.SelectedOption"
+            @bind-SelectedResource:after="HandleSelectedOptionChangedAsync" />
 
             @if (!ViewportInformation.IsDesktop && PageViewModel.Model is not null)
             {
                 <TreeOpenApiMethodSelector
-                    @ref="_treeOpenApiMethodSelector"
-                    HandleSelectedTreeItemChangedAsync="@HandleSelectedTreeItemChangedAsync"
-                    IncludeLabel="true"
-                    SelectedTreeItem="@PageViewModel.SelectedTreeItem"
-                    Tags="@PageViewModel.Model.Tags" />
+                @ref="_treeOpenApiMethodSelector"
+                HandleSelectedTreeItemChangedAsync="@HandleSelectedTreeItemChangedAsync"
+                IncludeLabel="true"
+                SelectedTreeItem="@PageViewModel.SelectedTreeItem"
+                Tags="@PageViewModel.Model.Tags" />
             }
         </ToolbarSection>
         <MainSection>
@@ -70,30 +70,30 @@
                 else
                 {
                     <FluentSplitter
-                        BarHandle="@ViewportInformation.IsDesktop"
-                        Style="height:100%"
-                        Panel1Size="@(ViewportInformation.IsDesktop ? "2fr" : "0")"
-                        Panel2Size="8fr"
-                        BarSize="@(ViewportInformation.IsDesktop ? 5 : 0)">
+                    BarHandle="@ViewportInformation.IsDesktop"
+                    Style="height:100%"
+                    Panel1Size="@(ViewportInformation.IsDesktop ? "2fr" : "0")"
+                    Panel2Size="8fr"
+                    BarSize="@(ViewportInformation.IsDesktop ? 5 : 0)">
 
                         <Panel1>
                             @if (ViewportInformation.IsDesktop)
                             {
                                 <TreeOpenApiMethodSelector
-                                    @ref="_treeOpenApiMethodSelector"
-                                    HandleSelectedTreeItemChangedAsync="@HandleSelectedTreeItemChangedAsync"
-                                    SelectedTreeItem="@PageViewModel.SelectedTreeItem"
-                                    Tags="@PageViewModel.Model.Tags" />
+                                @ref="_treeOpenApiMethodSelector"
+                                HandleSelectedTreeItemChangedAsync="@HandleSelectedTreeItemChangedAsync"
+                                SelectedTreeItem="@PageViewModel.SelectedTreeItem"
+                                Tags="@PageViewModel.Model.Tags" />
                             }
                         </Panel1>
                         <Panel2>
                             <SummaryDetailsView
-                                @ref="_summaryDetailsView"
-                                ShowDetails="@(PageViewModel.Response is not null)"
-                                OnDismiss="@(() => ClearMethodResponse())"
-                                SelectedValue="@PageViewModel.Response"
-                                ViewKey="OpenApiResponse">
-                                
+                            @ref="_summaryDetailsView"
+                            ShowDetails="@(PageViewModel.Response is not null)"
+                            OnDismiss="@(() => ClearMethodResponse())"
+                            SelectedValue="@PageViewModel.Response"
+                            ViewKey="OpenApiResponse">
+
                                 <Summary>
                                     @if (PageViewModel.SelectedMethod == null)
                                     {
@@ -116,8 +116,17 @@
                                             <header style="height: auto;">
                                                 <div class="details-header-title" title="API Request">API Request</div>
                                                 <div class="header-actions">
-                                                    <FluentButton Appearance="Appearance.Stealth" BackgroundColor="@(ViewportInformation.IsDesktop ? null : "rgba(0, 0, 0, 0)")" IconEnd="@(new Icons.Regular.Size16.Play())"
-                                                                  OnClick="SendRequest" Title="@Loc[nameof(ControlsStrings.SummaryDetailsViewCloseView)]" aria-label="@Loc[nameof(ControlsStrings.SummaryDetailsViewCloseView)]" />
+                                                    @if (_sendingRequest)
+                                                    {
+                                                        <FluentLabel Style="float: left; margin-right: 8px">Sending request ...</FluentLabel>
+                                                    }
+                                                    <FluentButton Appearance="Appearance.Stealth"
+                                                                  BackgroundColor="@(ViewportInformation.IsDesktop ? null : "rgba(0, 0, 0, 0)")"
+                                                                  Disabled="_sendingRequest"
+                                                                  IconEnd="@(new Icons.Regular.Size16.Play())"
+                                                                  OnClick="SendRequest"
+                                                                  Title="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSendRequest)]"
+                                                                  aria-label="@Loc[nameof(Dashboard.Resources.OpenApi.OpenApiSendRequest)]" />
                                                 </div>
                                             </header>
                                             <OpenApiRequest
