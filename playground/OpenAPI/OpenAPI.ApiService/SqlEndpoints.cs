@@ -28,10 +28,7 @@ internal static class SqlEndpoints
                 }
             }
 
-            return Results.Ok(new
-            {
-                Result = result
-            });
+            return Results.Ok(result);
         })
             .Produces<string>(StatusCodes.Status200OK, ContentTypes.ApplicationJson)
             .WithSummary("Returns some data from a Sql Server.")
