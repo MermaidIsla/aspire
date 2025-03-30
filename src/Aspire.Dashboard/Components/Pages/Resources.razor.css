@@ -64,18 +64,30 @@
     overflow: hidden;
 }
 
-::deep .resource-tabs fluent-tab:first-child {
+::deep .resource-tabs fluent-tabs {
     margin-left: calc(var(--design-unit) * 3px);
 }
 
 ::deep .resources-grid-container {
-    margin-top: 10px;
     overflow: auto;
     grid-area: resources-tab-content;
 }
 
+::deep .resource-tabs .resources-grid-container {
+    margin-top: 10px;
+}
+
 ::deep .resource-graph-container {
     grid-area: resources-tab-content;
+    position: relative; /* So graph buttons are position inside the container */
+}
+
+::deep .resource-graph-controls {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    display: flex;
+    column-gap: 10px;
 }
 
 ::deep .resource-graph .texts {

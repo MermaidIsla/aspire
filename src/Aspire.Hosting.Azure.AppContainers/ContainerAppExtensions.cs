@@ -57,13 +57,16 @@ public static class ContainerAppExtensions
     [Experimental("ASPIREACADOMAINS001", UrlFormat = "https://aka.ms/dotnet/aspire/diagnostics#{0}")]
     public static void ConfigureCustomDomain(this ContainerApp app, IResourceBuilder<ParameterResource> customDomain, IResourceBuilder<ParameterResource> certificateName)
     {
+        ArgumentNullException.ThrowIfNull(app);
+        ArgumentNullException.ThrowIfNull(customDomain);
+        ArgumentNullException.ThrowIfNull(certificateName);
+
         if (app.ParentInfrastructure is not AzureResourceInfrastructure module)
         {
             throw new ArgumentException("Cannot configure custom domain when resource is not parented by ResourceModuleConstruct.", nameof(app));
         }
 
-        var containerAppManagedEnvironmentIdParameter = module.GetProvisionableResources().OfType<ProvisioningParameter>().Single(
-            p => p.BicepIdentifier == "outputs_azure_container_apps_environment_id");
+        var containerAppManagedEnvironmentId = app.EnvironmentId;
         var certificateNameParameter = certificateName.AsProvisioningParameter(module);
         var customDomainParameter = customDomain.AsProvisioningParameter(module);
 
@@ -83,7 +86,7 @@ public static class ContainerAppExtensions
                 new StringLiteralExpression(string.Empty)),
             new InterpolatedStringExpression(
                 [
-                    new IdentifierExpression(containerAppManagedEnvironmentIdParameter.BicepIdentifier),
+                    containerAppManagedEnvironmentId.Compile(),
                     new StringLiteralExpression("/managedCertificates/"),
                     new IdentifierExpression(certificateNameParameter.BicepIdentifier)
                  ]),

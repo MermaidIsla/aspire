@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en" target-language="ko" original="../Dialogs.resx">
     <body>
@@ -60,6 +60,26 @@
       <trans-unit id="FilterDialogConditionInputLabel">
         <source>Condition</source>
         <target state="translated">조건</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FilterDialogDisableAll">
+        <source>Disable all</source>
+        <target state="new">Disable all</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FilterDialogDisableFilterButtonText">
+        <source>Disable filter</source>
+        <target state="new">Disable filter</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FilterDialogEnableAll">
+        <source>Enable all</source>
+        <target state="new">Enable all</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="FilterDialogEnableFilterButtonText">
+        <source>Enable filter</source>
+        <target state="new">Enable filter</target>
         <note />
       </trans-unit>
       <trans-unit id="FilterDialogFieldPlaceholder">
@@ -250,6 +270,21 @@
       <trans-unit id="TextVisualizerEditorDialogEditingText">
         <source>Editing</source>
         <target state="new">Editing</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="TextVisualizerSecretWarningAcknowledge">
+        <source>Show value</source>
+        <target state="translated">값 표시</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="TextVisualizerSecretWarningDescription">
+        <source>Confirm you want to show the value. In the future, opening the text visualizer will automatically display all values</source>
+        <target state="translated">값을 표시할지 확인하세요. 나중에 텍스트 시각화 도구를 열면 모든 값이 자동으로 표시됩니다.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="TextVisualizerSecretWarningTitle">
+        <source>Sensitive value hidden</source>
+        <target state="translated">중요한 값 숨김</target>
         <note />
       </trans-unit>
       <trans-unit id="TextVisualizerSelectFormatType">

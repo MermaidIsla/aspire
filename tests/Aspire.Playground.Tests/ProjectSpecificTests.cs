@@ -3,14 +3,14 @@
 
 using Aspire.Hosting;
 using Aspire.Hosting.Tests.Utils;
-using Aspire.Components.Common.Tests;
+using Aspire.TestUtilities;
 using SamplesIntegrationTests;
 using SamplesIntegrationTests.Infrastructure;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Aspire.Playground.Tests;
 
+[RequiresDocker]
 public class ProjectSpecificTests(ITestOutputHelper _testOutput)
 {
     [Fact]

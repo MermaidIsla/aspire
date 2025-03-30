@@ -30,7 +30,7 @@ public static class MySqlBuilderExtensions
     public static IResourceBuilder<MySqlServerResource> AddMySql(this IDistributedApplicationBuilder builder, [ResourceName] string name, IResourceBuilder<ParameterResource>? password = null, int? port = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(name);
+        ArgumentException.ThrowIfNullOrEmpty(name);
 
         var passwordParameter = password?.Resource ?? ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(builder, $"{name}-password");
 
@@ -72,7 +72,7 @@ public static class MySqlBuilderExtensions
     public static IResourceBuilder<MySqlDatabaseResource> AddDatabase(this IResourceBuilder<MySqlServerResource> builder, [ResourceName] string name, string? databaseName = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(name);
+        ArgumentException.ThrowIfNullOrEmpty(name);
 
         // Use the resource name as the database name if it's not provided
         databaseName ??= name;
@@ -123,18 +123,15 @@ public static class MySqlBuilderExtensions
             if (mySqlInstances.Count() == 1)
             {
                 var singleInstance = mySqlInstances.Single();
-                if (singleInstance.PrimaryEndpoint.IsAllocated)
+                var endpoint = singleInstance.PrimaryEndpoint;
+                phpMyAdminContainerBuilder.WithEnvironment(context =>
                 {
-                    var endpoint = singleInstance.PrimaryEndpoint;
-                    phpMyAdminContainerBuilder.WithEnvironment(context =>
-                    {
-                        // PhpMyAdmin assumes MySql is being accessed over a default Aspire container network and hardcodes the resource address
-                        // This will need to be refactored once updated service discovery APIs are available
-                        context.EnvironmentVariables.Add("PMA_HOST", $"{endpoint.Resource.Name}:{endpoint.TargetPort}");
-                        context.EnvironmentVariables.Add("PMA_USER", "root");
-                        context.EnvironmentVariables.Add("PMA_PASSWORD", singleInstance.PasswordParameter.Value);
-                    });
-                }
+                    // PhpMyAdmin assumes MySql is being accessed over a default Aspire container network and hardcodes the resource address
+                    // This will need to be refactored once updated service discovery APIs are available
+                    context.EnvironmentVariables.Add("PMA_HOST", $"{endpoint.Resource.Name}:{endpoint.TargetPort}");
+                    context.EnvironmentVariables.Add("PMA_USER", "root");
+                    context.EnvironmentVariables.Add("PMA_PASSWORD", singleInstance.PasswordParameter.Value);
+                });
             }
             else
             {
@@ -215,7 +212,7 @@ public static class MySqlBuilderExtensions
     public static IResourceBuilder<MySqlServerResource> WithDataBindMount(this IResourceBuilder<MySqlServerResource> builder, string source, bool isReadOnly = false)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(source);
+        ArgumentException.ThrowIfNullOrEmpty(source);
 
         return builder.WithBindMount(source, "/var/lib/mysql", isReadOnly);
     }
@@ -230,7 +227,7 @@ public static class MySqlBuilderExtensions
     public static IResourceBuilder<MySqlServerResource> WithInitBindMount(this IResourceBuilder<MySqlServerResource> builder, string source, bool isReadOnly = true)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(source);
+        ArgumentException.ThrowIfNullOrEmpty(source);
 
         return builder.WithBindMount(source, "/docker-entrypoint-initdb.d", isReadOnly);
     }
@@ -248,20 +245,17 @@ public static class MySqlBuilderExtensions
         writer.WriteLine();
         foreach (var mySqlInstance in mySqlInstances)
         {
-            if (mySqlInstance.PrimaryEndpoint.IsAllocated)
-            {
-                var endpoint = mySqlInstance.PrimaryEndpoint;
-                writer.WriteLine("$i++;");
-                // PhpMyAdmin assumes MySql is being accessed over a default Aspire container network and hardcodes the resource address
-                // This will need to be refactored once updated service discovery APIs are available
-                writer.WriteLine($"$cfg['Servers'][$i]['host'] = '{endpoint.Resource.Name}:{endpoint.TargetPort}';");
-                writer.WriteLine($"$cfg['Servers'][$i]['verbose'] = '{mySqlInstance.Name}';");
-                writer.WriteLine($"$cfg['Servers'][$i]['auth_type'] = 'cookie';");
-                writer.WriteLine($"$cfg['Servers'][$i]['user'] = 'root';");
-                writer.WriteLine($"$cfg['Servers'][$i]['password'] = '{mySqlInstance.PasswordParameter.Value}';");
-                writer.WriteLine($"$cfg['Servers'][$i]['AllowNoPassword'] = true;");
-                writer.WriteLine();
-            }
+            var endpoint = mySqlInstance.PrimaryEndpoint;
+            writer.WriteLine("$i++;");
+            // PhpMyAdmin assumes MySql is being accessed over a default Aspire container network and hardcodes the resource address
+            // This will need to be refactored once updated service discovery APIs are available
+            writer.WriteLine($"$cfg['Servers'][$i]['host'] = '{endpoint.Resource.Name}:{endpoint.TargetPort}';");
+            writer.WriteLine($"$cfg['Servers'][$i]['verbose'] = '{mySqlInstance.Name}';");
+            writer.WriteLine($"$cfg['Servers'][$i]['auth_type'] = 'cookie';");
+            writer.WriteLine($"$cfg['Servers'][$i]['user'] = 'root';");
+            writer.WriteLine($"$cfg['Servers'][$i]['password'] = '{mySqlInstance.PasswordParameter.Value}';");
+            writer.WriteLine($"$cfg['Servers'][$i]['AllowNoPassword'] = true;");
+            writer.WriteLine();
         }
         writer.WriteLine("$cfg['DefaultServer'] = 1;");
         writer.WriteLine("?>");

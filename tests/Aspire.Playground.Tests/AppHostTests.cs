@@ -4,6 +4,7 @@
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using Aspire.TestUtilities;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Tests.Utils;
@@ -13,11 +14,11 @@ using Polly.Timeout;
 using SamplesIntegrationTests;
 using SamplesIntegrationTests.Infrastructure;
 using Xunit;
-using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace Aspire.Playground.Tests;
 
+[RequiresDocker]
 public class AppHostTests
 {
     private readonly ITestOutputHelper _testOutput;

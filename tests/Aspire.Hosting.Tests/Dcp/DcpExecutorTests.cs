@@ -106,9 +106,9 @@ public class DcpExecutorTests
     }
 
     [Theory]
-    [InlineData(ExecutionType.IDE, false, null, new string[] { "--", "--test1", "--test2" })]
+    [InlineData(ExecutionType.IDE, false, null, new string[] { "--test1", "--test2" })]
     [InlineData(ExecutionType.IDE, true, new string[] { "--withargs-test" }, new string[] { "--withargs-test" })]
-    [InlineData(ExecutionType.Process, false, new string[] { "--", "--test1", "--test2" }, new string[] { "--", "--test1", "--test2" })]
+    [InlineData(ExecutionType.Process, false, new string[] { "--test1", "--test2" }, new string[] { "--test1", "--test2" })]
     [InlineData(ExecutionType.Process, true, new string[] { "--", "--test1", "--test2", "--withargs-test" }, new string[] { "--", "--test1", "--test2", "--withargs-test" })]
     public async Task CreateExecutable_LaunchProfileHasCommandLineArgs_AnnotationsAdded(string executionType, bool addAppHostArgs, string[]? expectedArgs, string[]? expectedAnnotations)
     {
@@ -1222,7 +1222,7 @@ public class DcpExecutorTests
             var builder = new ConfigurationBuilder();
             builder.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["DOTNET_DASHBOARD_OTLP_ENDPOINT_URL"] = "http://localhost",
+                [KnownConfigNames.DashboardOtlpGrpcEndpointUrl] = "http://localhost",
                 ["AppHost:BrowserToken"] = "TestBrowserToken!",
                 ["AppHost:OtlpApiKey"] = "TestOtlpApiKey!"
             });
